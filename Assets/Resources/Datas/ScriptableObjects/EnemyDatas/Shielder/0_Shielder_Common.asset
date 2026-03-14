@@ -30,7 +30,7 @@ MonoBehaviour:
   _fadeOutDuration: 0.5
   _skillDuration: 1
   _statsByLevel:
-  - MaxHealth: 20
+  - MaxHealth: 1
     MaxMP: 0
     AttackPower: 1
     DefensePower: 0
@@ -45,9 +45,9 @@ MonoBehaviour:
     AttackPower: 0
     DefensePower: 0
     CritProb: 0
-  - MaxHealth: 0
+  - MaxHealth: 20
     MaxMP: 0
-    AttackPower: 0
+    AttackPower: 1
     DefensePower: 0
     CritProb: 0
   - MaxHealth: 0

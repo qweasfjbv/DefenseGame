@@ -11,8 +11,10 @@ namespace Defense.Controller
 
 	public class ReservationKey : IComparable<ReservationKey>
 	{
-		public int dID;
-		public float time;
+		private int dID;
+		private float time;
+
+		public float Time => time;
 
 		public ReservationKey(int dID, float time)
 		{
@@ -34,9 +36,13 @@ namespace Defense.Controller
 
 	public class DamageReservation
 	{
-		public float damage;
-		public DamageType type;
-		public CancellationTokenSource cancellationTokenSource;
+		private float damage;
+		private DamageType type;
+		private CancellationTokenSource cancellationTokenSource;
+
+		public float Damage => damage;
+		public DamageType Type => type;
+		public CancellationTokenSource CTS => cancellationTokenSource;
 
 		public DamageReservation(CancellationTokenSource cancellationTokenSource, float damage, DamageType type)
 		{
@@ -99,7 +105,7 @@ namespace Defense.Controller
 			}
 
 			attackTarget = targetTransform;
-			transform.LookAt(attackTarget);
+			base.transform.LookAt(attackTarget);
 			animator.SetFloat(animIDSpeed, 0);
 			animator.SetTrigger(animIDAttack);
 			animator.SetFloat(animIDAttackMT, attackClipLength / unitData.AttackCooltime);
@@ -119,6 +125,7 @@ namespace Defense.Controller
 		public bool IsAbleToTargeted(float duration)
 		{
 			if (currentHP <= 0f) return false;
+			// TODO - 리턴 정확한 값으로 수정 필요
 			if (!isTargetFlagDirty) return isAbleToTargeted;
 
 			float tmpHP = currentHP;
@@ -126,10 +133,10 @@ namespace Defense.Controller
 
 			foreach (var res in reservedDamage)
 			{
-				tmpHP -= Calculation.CalculateDamage(unitData.StatsByLevel[0], res.Value.type, res.Value.damage);
+				tmpHP -= Calculation.CalculateDamage(unitData.StatsByLevel[0], res.Value.Type, res.Value.Damage);
 				if (tmpHP <= 0f)
 				{
-					lastTime = res.Key.time;
+					lastTime = res.Key.Time;
 					break;
 				}
 			}
@@ -169,7 +176,7 @@ namespace Defense.Controller
 			skillTargets[0] = targetTransform;
 			skillTargetCount = 1;
 
-			transform.LookAt(targetTransform);
+			base.transform.LookAt(targetTransform);
 			animator.SetFloat(animIDSpeed, 0);
 			animator.SetTrigger(animIDSkill);
 			animator.SetFloat(animIDSkillMT, skillClipLength / unitData.SkillDuration);
@@ -188,7 +195,7 @@ namespace Defense.Controller
 			{
 				await UniTask.Delay((int)(duration * 1000));
 
-				if (!reservedDamage[resKey].cancellationTokenSource.IsCancellationRequested)
+				if (!reservedDamage[resKey].CTS.IsCancellationRequested)
 					GetImmediateDamage(type, damage);
 			}
 			catch (OperationCanceledException)
@@ -208,7 +215,7 @@ namespace Defense.Controller
 			float trueDamage = Calculation.CalculateDamage(unitData.StatsByLevel[0], type, damage);
 			currentHP -= trueDamage;
 
-			UIManager.Instance.GameUI.ShowDamage(transform.position + Vector3.up * 1.8f, trueDamage, type, HitResultType.Normal);
+			UIManager.Instance.GameUI.ShowDamage(base.transform.position + Vector3.up * 1.8f, trueDamage, type, HitResultType.Normal);
 			CheckIfDied();
 			ApplyKnockback();
 		}
@@ -258,7 +265,7 @@ namespace Defense.Controller
 			animator.SetFloat(animIDSpeed, 0f);
 			animator.SetFloat(animIDDamagedMT, damagedClipLength / knockbackRemainedTime);
 			animator.SetTrigger(animIDDamaged);
-			PoolingManager.Instance.SpawnParticle(ParticleType.Hit, myTransform.position);
+			PoolingManager.Instance.SpawnParticle(ParticleType.Hit, transform.position);
 		}
 		private void UpdateKnockbackRemainedTime()
 		{
@@ -271,7 +278,7 @@ namespace Defense.Controller
 		private void OnDestroy()
 		{
 			foreach (var res in reservedDamage.Values)
-				res.cancellationTokenSource.Cancel();
+				res.CTS.Cancel();
 		}
 	}
 }

@@ -9,15 +9,12 @@ using Defense.Props;
 
 namespace Defense.Controller
 {
-	[RequireComponent(typeof(Animator))]
-	[RequireComponent(typeof(Collider))]
 	public abstract partial class UnitController : MonoBehaviour
 		,IAttackable
 		,IDamagable
 		,ISkillable
 	{
 		/** Components **/
-		private Transform myTransform;
 		private Animator animator = null;
 
 		/** SO Datas **/
@@ -62,7 +59,6 @@ namespace Defense.Controller
 
 		private void Awake()
 		{
-			myTransform = GetComponent<Transform>();
 			animator = GetComponent<Animator>();
 
 			attackClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_ATTACK);
@@ -137,7 +133,7 @@ namespace Defense.Controller
 			mySlotID = slotID;
 			
 			Quaternion lookRot = Quaternion.LookRotation(new Vector3(0, 0, playerIdx == 0 ? 1 : -1));
-			transform.rotation = lookRot;
+			base.transform.rotation = lookRot;
 
 			if (playerIdx == 0)
 			{
@@ -155,7 +151,7 @@ namespace Defense.Controller
 		private int targetCounts = 0;
 		private void CheckNearbyTarget()
 		{
-			targetCounts = Physics.OverlapSphereNonAlloc(transform.position, unitData.SearchRange, targets, targetLayer);
+			targetCounts = Physics.OverlapSphereNonAlloc(base.transform.position, unitData.SearchRange, targets, targetLayer);
 			if (targetCounts > 0)
 			{
 				float minDistance = float.MaxValue;
@@ -167,7 +163,7 @@ namespace Defense.Controller
 					if (targets[i].GetComponent<IDamagable>() == null ||
 					!targets[i].GetComponent<IDamagable>().IsAbleToTargeted(unitData.AttackDelay)) continue;
 
-					float distance = Vector3.SqrMagnitude(transform.position - targets[i].transform.position);
+					float distance = Vector3.SqrMagnitude(base.transform.position - targets[i].transform.position);
 
 					if (distance < minDistance)
 					{
@@ -186,7 +182,7 @@ namespace Defense.Controller
 				isChasing = false;
 			}
 
-			if (targetTransform != null && Vector3.SqrMagnitude(transform.position- targetTransform.position) <= unitData.AttackRange* unitData.AttackRange)
+			if (targetTransform != null && Vector3.SqrMagnitude(base.transform.position- targetTransform.position) <= unitData.AttackRange * unitData.AttackRange)
 			{
 				isAttacking = true;
 				isChasing = false;
@@ -200,14 +196,14 @@ namespace Defense.Controller
 				return;
 			}
 
-			Vector3 dir = targetTransform.position - myTransform.position;
+			Vector3 dir = targetTransform.position - transform.position;
 			dir.y = 0;
 
 			Quaternion targetRotation = Quaternion.LookRotation(dir);
-			myTransform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, unitData.RotationSpeed* Time.deltaTime);
-			myTransform.position = Vector3.MoveTowards(transform.position, targetTransform.position, unitData.MoveSpeed * Time.deltaTime);
+			transform.rotation = Quaternion.Lerp(base.transform.rotation, targetRotation, unitData.RotationSpeed * Time.deltaTime);
+			transform.position = Vector3.MoveTowards(base.transform.position, targetTransform.position, unitData.MoveSpeed * Time.deltaTime);
 
-			GetComponent<Animator>().SetFloat(animIDSpeed, (targetTransform.position - myTransform.position).AbsSum());
+			GetComponent<Animator>().SetFloat(animIDSpeed, (targetTransform.position - transform.position).AbsSum());
 		}
 
 		private void OnDrawGizmos()
@@ -215,9 +211,9 @@ namespace Defense.Controller
 			if (unitData == null) return;
 
 			Gizmos.color = Color.red;
-			Gizmos.DrawWireSphere(transform.position, unitData.SearchRange);
+			Gizmos.DrawWireSphere(base.transform.position, unitData.SearchRange);
 			Gizmos.color = Color.blue;
-			Gizmos.DrawWireSphere(transform.position, unitData.AttackRange);
+			Gizmos.DrawWireSphere(base.transform.position, unitData.AttackRange);
 		}
 
 		public static float hoverHeight = 1f;
@@ -239,7 +235,7 @@ namespace Defense.Controller
 			isDragging = false;
 
 			if (currentTween != null) currentTween.Kill();
-			transform.position = new Vector3(targetSlotPos.x, targetSlotPos.y + hoverHeight, targetSlotPos.z);
+			base.transform.position = new Vector3(targetSlotPos.x, targetSlotPos.y + hoverHeight, targetSlotPos.z);
 
 			Sequence seq = DOTween.Sequence();
 			seq.Append(transform.DOMoveY(targetSlotPos.y, hoverDuration).SetEase(Ease.InQuad));
