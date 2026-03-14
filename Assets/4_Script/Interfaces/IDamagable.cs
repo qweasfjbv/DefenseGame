@@ -1,6 +1,6 @@
-using Autobattler.Utils;
+using Defense.Utils;
 
-namespace Autobattler.Interfaces
+namespace Defense.Interfaces
 {
 	public interface IDamagable
 	{

@@ -1,9 +1,9 @@
 
 
-using Autobattler.Utils;
+using Defense.Utils;
 using System.Collections.Generic;
 
-namespace Autobattler.Manager
+namespace Defense.Manager
 {
 	public class DamageLogManager
 	{

@@ -1,5 +1,5 @@
 
-namespace Autobattler.Interfaces
+namespace Defense.Interfaces
 {
 	public interface ISkillable
 	{

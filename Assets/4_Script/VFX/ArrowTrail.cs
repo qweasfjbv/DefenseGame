@@ -1,8 +1,8 @@
-using Autobattler.Utils;
+using Defense.Utils;
 using UnityEngine;
-using Autobattler.VFX;
+using Defense.VFX;
 
-namespace Autobattler.Controller
+namespace Defense.Controller
 {
 	public class ArrowTrail : TrailBase
 	{

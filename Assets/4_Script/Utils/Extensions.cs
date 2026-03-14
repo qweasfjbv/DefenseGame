@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Autobattler.Utils
+namespace Defense.Utils
 {
 	public static class Extensions
 	{

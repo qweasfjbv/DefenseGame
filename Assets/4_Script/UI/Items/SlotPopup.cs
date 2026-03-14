@@ -1,7 +1,7 @@
-using Autobattler.Props;
+using Defense.Props;
 using UnityEngine;
 
-namespace Autobattler.UI
+namespace Defense.UI
 {
 	public class SlotPopup : PopupUIBase
 	{

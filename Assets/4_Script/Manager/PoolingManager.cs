@@ -1,10 +1,10 @@
 using Cysharp.Threading.Tasks;
-using Autobattler.Debugger;
-using Autobattler.Utils;
+using Defense.Debugger;
+using Defense.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Autobattler.Manager
+namespace Defense.Manager
 {
 	public class PoolingManager : MonoBehaviour
 	{

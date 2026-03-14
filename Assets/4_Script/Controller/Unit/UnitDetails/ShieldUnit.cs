@@ -1,7 +1,7 @@
-using Autobattler.Interfaces;
+using Defense.Interfaces;
 using UnityEngine;
 
-namespace Autobattler.Controller
+namespace Defense.Controller
 {
 	public class ShieldUnit : UnitController
 	{

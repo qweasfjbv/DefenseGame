@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Autobattler.Manager
+namespace Defense.Manager
 {
 	public class Managers : MonoBehaviour
 	{

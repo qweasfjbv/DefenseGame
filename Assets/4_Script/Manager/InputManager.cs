@@ -1,10 +1,10 @@
-using Autobattler.Controller;
-using Autobattler.InputActions;
-using Autobattler.Props;
-using Autobattler.Utils;
+using Defense.Controller;
+using Defense.InputActions;
+using Defense.Props;
+using Defense.Utils;
 using UnityEngine;
 
-namespace Autobattler.Manager
+namespace Defense.Manager
 {
 	public class InputManager
 	{

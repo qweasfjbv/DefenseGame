@@ -1,8 +1,8 @@
-using Autobattler.Manager;
-using Autobattler.Utils;
+using Defense.Manager;
+using Defense.Utils;
 using UnityEngine;
 
-namespace Autobattler.Controller
+namespace Defense.Controller
 {
 	public class TowerController : MonoBehaviour
 	{

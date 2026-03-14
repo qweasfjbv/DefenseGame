@@ -1,8 +1,8 @@
-using Autobattler.Controller;
-using Autobattler.Utils;
+using Defense.Controller;
+using Defense.Utils;
 using UnityEngine;
 
-namespace Autobattler.Props { 
+namespace Defense.Props { 
 	public class ProjectileBase : MonoBehaviour
 	{
 		private UnitController target = null;

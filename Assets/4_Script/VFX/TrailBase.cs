@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Autobattler.VFX
+namespace Defense.VFX
 {
 	[RequireComponent(typeof(TrailRenderer))]
 	public class TrailBase : MonoBehaviour

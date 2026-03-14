@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Autobattler.Utils;
-using Autobattler.Manager;
-using Autobattler.Interfaces;
+using Defense.Utils;
+using Defense.Manager;
+using Defense.Interfaces;
 using IUtil;
 using DG.Tweening;
-using Autobattler.Props;
+using Defense.Props;
 
-namespace Autobattler.Controller
+namespace Defense.Controller
 {
 	[RequireComponent(typeof(Animator))]
 	[RequireComponent(typeof(Collider))]

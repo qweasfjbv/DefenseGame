@@ -1,12 +1,12 @@
-using Autobattler.Utils;
+using Defense.Utils;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 using System;
 using UnityEngine;
-using Autobattler.Manager;
+using Defense.Manager;
 
-namespace Autobattler.Controller
+namespace Defense.Controller
 {
 
 	public class ReservationKey : IComparable<ReservationKey>

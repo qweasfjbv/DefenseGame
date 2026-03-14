@@ -1,7 +1,7 @@
-using Autobattler.InputActions;
+using Defense.InputActions;
 using UnityEngine;
 
-namespace Autobattler.Controller
+namespace Defense.Controller
 {
 	[RequireComponent(typeof(Camera))]
     public class CameraController : MonoBehaviour

@@ -1,10 +1,10 @@
-using Autobattler.Controller;
-using Autobattler.Utils;
+using Defense.Controller;
+using Defense.Utils;
 using IUtil;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Autobattler.Props
+namespace Defense.Props
 {
 	public enum SlotDir
 	{

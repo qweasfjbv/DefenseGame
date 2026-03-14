@@ -1,10 +1,10 @@
-using Autobattler.Controller;
-using Autobattler.Props;
+using Defense.Controller;
+using Defense.Props;
 using IUtil;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Autobattler.Manager
+namespace Defense.Manager
 {
 	public class GameManagerEx : MonoBehaviour
 	{

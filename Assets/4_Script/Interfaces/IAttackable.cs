@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Autobattler.Interfaces
+namespace Defense.Interfaces
 {
 	public interface IAttackable
 	{

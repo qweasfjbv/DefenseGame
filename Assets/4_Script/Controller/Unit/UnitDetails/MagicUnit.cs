@@ -1,9 +1,9 @@
-using Autobattler.Interfaces;
-using Autobattler.Manager;
-using Autobattler.VFX;
+using Defense.Interfaces;
+using Defense.Manager;
+using Defense.VFX;
 using UnityEngine;
 
-namespace Autobattler.Controller
+namespace Defense.Controller
 {
 	public class MagicUnit : UnitController
 	{

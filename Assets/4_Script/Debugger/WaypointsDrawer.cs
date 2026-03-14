@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Autobattler.Debugger
+namespace Defense.Debugger
 {
 	public class WaypointsDrawer : MonoBehaviour
 	{
