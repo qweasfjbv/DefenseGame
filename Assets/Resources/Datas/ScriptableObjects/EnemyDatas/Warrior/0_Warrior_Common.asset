@@ -32,7 +32,7 @@ MonoBehaviour:
   _statsByLevel:
   - MaxHealth: 100
     MaxMP: 100
-    AttackPower: 1000
+    AttackPower: 10
     DefensePower: 1
     CritProb: 0
   - MaxHealth: 0
