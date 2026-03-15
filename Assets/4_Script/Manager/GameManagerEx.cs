@@ -75,6 +75,7 @@ namespace Defense.Manager
 		}
 
 		int randId = 0;
+
 		[Button]
 		private void SpawnMage()
 		{
