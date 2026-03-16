@@ -47,4 +47,9 @@ namespace Defense.Utils
 		Lightning,
 
 	}
+
+	public enum BuffType
+	{
+
+	}
 }

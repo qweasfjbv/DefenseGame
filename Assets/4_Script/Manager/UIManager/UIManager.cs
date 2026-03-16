@@ -22,12 +22,14 @@ namespace Defense.Manager
 		}
 		#endregion
 
-		public GameUIManager GameUI;
+		[SerializeField] private GameUIManager gameUI;
+
+		public static GameUIManager GameUI => s_instance.gameUI;
+
 
 		private void Awake()
 		{
 			Init();
 		}
-		
 	}
 }

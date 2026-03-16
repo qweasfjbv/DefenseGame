@@ -7,49 +7,49 @@ namespace Defense
 	public class UnitData : ScriptableObject
 	{
 		[Header("Movement")]
-		[SerializeField] private float _moveSpeed;
-		[SerializeField] private float _rotationSpeed;
+		[SerializeField] private float moveSpeed;
+		[SerializeField] private float rotationSpeed;
 
 		[Header("Attack")]
-		[SerializeField] private DamageType _damageType;
-		[SerializeField] private float _searchRange;
-		[SerializeField] private float _attackRange;
-		[SerializeField] private float _attackCooltime;
-		[SerializeField] private float _attackDelay;
-		[SerializeField] private float _mpPerAttack;
+		[SerializeField] private DamageType damageType;
+		[SerializeField] private float searchRange;
+		[SerializeField] private float attackRange;
+		[SerializeField] private float attackCooltime;
+		[SerializeField] private float attackDelay;
+		[SerializeField] private float mpPerAttack;
 
 		[Header("Knockback")]
-		[SerializeField] private bool _useKnockback;
-		[SerializeField] private float _knockbackDuration;
+		[SerializeField] private bool useKnockback;
+		[SerializeField] private float knockbackDuration;
 
 		[Header("Detect Settings")]
-		[SerializeField] private LayerMask _targetLayer;
-		[SerializeField] private int _maxDetectCounts;
+		[SerializeField] private LayerMask targetLayer;
+		[SerializeField] private int maxDetectCounts;
 
 		[Header("Durations")]
-		[SerializeField] private float _deathAnimDuration;
-		[SerializeField] private float _fadeOutDuration;
-		[SerializeField] private float _skillDuration;
+		[SerializeField] private float deathAnimDuration;
+		[SerializeField] private float fadeOutDuration;
+		[SerializeField] private float skillDuration;
 
 		[Header("Stats")]
-		[SerializeField] private LevelStat[] _statsByLevel = new LevelStat[Constants.ENEMY_LEVEL_MAX];
+		[SerializeField] private LevelStat[] statsByLevel = new LevelStat[Constants.ENEMY_LEVEL_MAX];
 
 		// ReadOnly Properties
-		public float MoveSpeed => _moveSpeed;
-		public float RotationSpeed => _rotationSpeed;
-		public DamageType DamageType => _damageType;
-		public float SearchRange => _searchRange;
-		public float AttackRange => _attackRange;
-		public float AttackCooltime => _attackCooltime;
-		public float AttackDelay => _attackDelay;
-		public float MPPerAttack => _mpPerAttack;
-		public bool UseKnockback => _useKnockback;
-		public float KnockbackDuration => _knockbackDuration;
-		public LayerMask TargetLayer => _targetLayer;
-		public int MaxDetectCounts => _maxDetectCounts;
-		public float DeathAnimDuration => _deathAnimDuration;
-		public float FadeOutDuration => _fadeOutDuration;
-		public float SkillDuration => _skillDuration;
-		public LevelStat[] StatsByLevel => _statsByLevel;
+		public float MoveSpeed => moveSpeed;
+		public float RotationSpeed => rotationSpeed;
+		public DamageType DamageType => damageType;
+		public float SearchRange => searchRange;
+		public float AttackRange => attackRange;
+		public float AttackCooltime => attackCooltime;
+		public float AttackDelay => attackDelay;
+		public float MPPerAttack => mpPerAttack;
+		public bool UseKnockback => useKnockback;
+		public float KnockbackDuration => knockbackDuration;
+		public LayerMask TargetLayer => targetLayer;
+		public int MaxDetectCounts => maxDetectCounts;
+		public float DeathAnimDuration => deathAnimDuration;
+		public float FadeOutDuration => fadeOutDuration;
+		public float SkillDuration => skillDuration;
+		public LevelStat[] StatsByLevel => statsByLevel;
 	}
 }

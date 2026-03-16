@@ -1,14 +1,12 @@
-using Defense.Utils;
 using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
-using System.Threading;
-using System;
-using UnityEngine;
 using Defense.Manager;
+using Defense.Utils;
+using System;
+using System.Threading;
+using UnityEngine;
 
 namespace Defense.Controller
 {
-
 	public class ReservationKey : IComparable<ReservationKey>
 	{
 		private int dID;
@@ -57,38 +55,17 @@ namespace Defense.Controller
 	/// </summary>
 	public partial class UnitController
 	{
-		private float currentHP = 0f;
-		private float currentAtk = 0f;
-		private float currentDef = 0f;
-		private float currentMP = 0f;
-		private float maxMP = float.MaxValue;
-		
-		private SortedDictionary<ReservationKey, DamageReservation> reservedDamage = new();
-		private int damageId = 0;
-
-		private bool isEnemyDead = false;
-
-		private void CacheStatData(LevelStat stat)
-		{
-			damageId = 0;
-			currentHP = stat.MaxHealth;
-			currentAtk = stat.AttackPower;
-			currentDef = stat.DefensePower;
-			maxMP = stat.MaxMP;
-		}
-		private void InitCombat()
-		{
-			isEnemyDead = false;
-			isTargetFlagDirty = true;
-			animator.SetBool(animIDDeath, false);
-			currentMP = 0f;
-			CacheStatData(unitData.StatsByLevel[0]);
-		}
 
 		private Transform attackTarget = null;
+
 		private int skillTargetCount = 0;
 		private Transform[] skillTargets = new Transform[10];
 
+		private void InitCombat()
+		{
+			animator.SetBool(animIDDeath, false);
+			unitStat.CacheStatData(unitData, 0);
+		}
 
 		/** IAttackable Interface **/
 		public bool IsAbleToAttack()
@@ -118,50 +95,12 @@ namespace Defense.Controller
 				currentAttackCooltime -= Time.deltaTime;
 		}
 
-		private bool isTargetFlagDirty = true;
-		private bool isAbleToTargeted = false;
-
-		/** IDamagable Interface **/
-		public bool IsAbleToTargeted(float duration)
-		{
-			if (currentHP <= 0f) return false;
-			// TODO - 리턴 정확한 값으로 수정 필요
-			if (!isTargetFlagDirty) return isAbleToTargeted;
-
-			float tmpHP = currentHP;
-			float lastTime = 0;
-
-			foreach (var res in reservedDamage)
-			{
-				tmpHP -= Calculation.CalculateDamage(unitData.StatsByLevel[0], res.Value.Type, res.Value.Damage);
-				if (tmpHP <= 0f)
-				{
-					lastTime = res.Key.Time;
-					break;
-				}
-			}
-
-			isAbleToTargeted = (tmpHP > 0f || (tmpHP <= 0f && Time.time + duration < lastTime));
-			isTargetFlagDirty = false;
-			return isAbleToTargeted;
-		}
-		public void ReserveDamage(DamageType type, float damage, float duration)
-		{
-			if (isEnemyDead) return;
-
-			var cts = new CancellationTokenSource();
-			ReservationKey resKey = new ReservationKey(++damageId, Time.time + duration);
-			reservedDamage[resKey] = new DamageReservation(cts, damage, type);
-			isTargetFlagDirty = true;
-
-			DelayedDamage(type, damage, duration, resKey).Forget();
-		}
 
 		/** ISkillable Interface **/
 		public bool IsAbleToUseSkill()
 		{
-			// HACK - 특정 레벨 이상에만 열리도록?
-			return currentMP >= maxMP;
+			// LEGACY
+			return false;
 		}
 		public void StartSkillAnim()
 		{
@@ -180,58 +119,14 @@ namespace Defense.Controller
 			animator.SetFloat(animIDSpeed, 0);
 			animator.SetTrigger(animIDSkill);
 			animator.SetFloat(animIDSkillMT, skillClipLength / unitData.SkillDuration);
-			currentMP = 0;
+			
+			unitStat.OnUseSkill();
 			currentAttackCooltime = unitData.SkillDuration;
-		}
-
-		/** Pre-Calculate Damage System **/
-		/// <summary>
-		/// Delay 된 데미지를 입히는 함수
-		/// 취소 시 catch 부분 실행됨
-		/// </summary>
-		private async UniTaskVoid DelayedDamage(DamageType type, float damage, float duration, ReservationKey resKey)
-		{
-			try
-			{
-				await UniTask.Delay((int)(duration * 1000));
-
-				if (!reservedDamage[resKey].CTS.IsCancellationRequested)
-					GetImmediateDamage(type, damage);
-			}
-			catch (OperationCanceledException)
-			{
-				// Cancelled
-			}
-			finally
-			{
-				reservedDamage.Remove(resKey);
-			}
-		}
-
-		public void GetImmediateDamage(DamageType type, float damage)
-		{
-			if (isEnemyDead) return;
-
-			float trueDamage = Calculation.CalculateDamage(unitData.StatsByLevel[0], type, damage);
-			currentHP -= trueDamage;
-
-			UIManager.Instance.GameUI.ShowDamage(base.transform.position + Vector3.up * 1.8f, trueDamage, type, HitResultType.Normal);
-			CheckIfDied();
-			ApplyKnockback();
-		}
-		public void CheckIfDied()
-		{
-			if (currentHP <= 0f)
-			{
-				OnDead();
-			}
 		}
 
 		/** Dying System **/
 		private void OnDead()
 		{
-			if (isEnemyDead) return;
-			isEnemyDead = true;
 			animator.SetFloat(animIDSpeed, 0f);
 			animator.SetFloat(animIDDeathMT, deathClipLength / unitData.DeathAnimDuration);
 			animator.SetBool(animIDDeath, true);
@@ -273,12 +168,6 @@ namespace Defense.Controller
 				knockbackRemainedTime -= Time.deltaTime;
 
 			animator.SetLayerWeight(1, knockbackRemainedTime > Mathf.Epsilon ? 1f : 0f);
-		}
-
-		private void OnDestroy()
-		{
-			foreach (var res in reservedDamage.Values)
-				res.CTS.Cancel();
 		}
 	}
 }

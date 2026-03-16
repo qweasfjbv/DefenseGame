@@ -7,8 +7,7 @@ namespace Defense.Controller
 	{
 		public override void Attack(Transform target)
 		{
-			if (target == null || target.GetComponent<IDamagable>() == null) return;
-
+			// TODO -
 		}
 
 		public override bool IsSameUnit(int unitId, int level)
