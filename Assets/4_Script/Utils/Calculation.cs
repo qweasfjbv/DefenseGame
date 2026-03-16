@@ -9,9 +9,9 @@ namespace Defense.Utils
 		/// defense, damage, type 을 통해 줄어들 HP를 계산합니다.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static float CalculateDamage(LevelStat stat , DamageType type, float damage)
+		public static float CalculateDamage(float def, DamageType type, float damage)
 		{
-			float calculatedDamage = damage * (1 - (stat.DefensePower / (100 + stat.DefensePower)));
+			float calculatedDamage = damage * (1 - (def / (100 + def)));
 			return calculatedDamage < 0 ? 0 : calculatedDamage;
 		}
 

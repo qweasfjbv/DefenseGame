@@ -52,9 +52,9 @@ namespace Defense.Utils
 
 	public struct DamageLog
 	{
-		public int atkSlotId;
-		public int defSlotId;
-		public int atkDamage;
+		public int AtkSlotId;
+		public int DefSlotId;
+		public int AtkDamage;
 	}
 
 }

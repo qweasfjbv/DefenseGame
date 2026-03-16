@@ -1,3 +1,4 @@
+using Defense.Components;
 using Defense.Interfaces;
 using Defense.Manager;
 using Defense.VFX;
@@ -9,9 +10,9 @@ namespace Defense.Controller
 	{
 		public override void Attack(Transform target)
 		{
-			if (target == null || target.GetComponent<IDamagable>() == null) return;
+			if (target == null || !target.TryGetComponent<IGetComponent<Damagable>>(out var damagable)) return;
 
-			target.GetComponent<IDamagable>().ReserveDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower, unitData.AttackDelay);
+			damagable.GetComponent().ReserveDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower, unitData.AttackDelay);
 			TrailBase tb = PoolingManager.Instance.Spawn(Utils.ProjectileType.Arrow, unitData.AttackDelay).GetComponent<TrailBase>();
 			tb.SetTrail(transform.position, target, unitData.AttackDelay);
 		}

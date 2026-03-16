@@ -1,5 +1,3 @@
-
-
 namespace Defense.Controller
 {
 	/// <summary>
@@ -13,7 +11,7 @@ namespace Defense.Controller
 		{
 			if (attackTarget == null) return;
 			Attack(attackTarget);
-			currentMP += unitData.MPPerAttack;
+			unitStat.OnAttack();
 		}
 
 		public void OnSkill()

@@ -1,21 +1,28 @@
-using System.Collections.Generic;
-using UnityEngine;
-using Defense.Utils;
-using Defense.Manager;
+using Defense.Components;
 using Defense.Interfaces;
-using IUtil;
-using DG.Tweening;
+using Defense.Manager;
 using Defense.Props;
+using Defense.Utils;
+using DG.Tweening;
+using IUtil;
+using UnityEngine;
 
 namespace Defense.Controller
 {
+	[RequireComponent(typeof(UnitStat))]
+	[RequireComponent(typeof(Damagable))]
 	public abstract partial class UnitController : MonoBehaviour
 		,IAttackable
-		,IDamagable
+		,IGetComponent<Damagable>
 		,ISkillable
 	{
 		/** Components **/
 		private Animator animator = null;
+
+		private UnitStat unitStat = null;
+		private Damagable damagable = null;
+
+		public Damagable GetComponent() => damagable;
 
 		/** SO Datas **/
 		protected UnitData unitData = null;
@@ -60,6 +67,10 @@ namespace Defense.Controller
 		private void Awake()
 		{
 			animator = GetComponent<Animator>();
+			unitStat = GetComponent<UnitStat>();
+			damagable = GetComponent<Damagable>();
+
+			damagable.Init(unitStat);
 
 			attackClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_ATTACK);
 			damagedClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_DAMAGE);
@@ -75,6 +86,9 @@ namespace Defense.Controller
 			animIDDeath = Animator.StringToHash(Constants.ANIM_PARAM_DIED);
 			animIDSkill = Animator.StringToHash(Constants.ANIM_PARAM_SKILL);
 			animIDSkillMT = Animator.StringToHash(Constants.ANIM_PARAM_SKILL_MT);
+
+			damagable.OnDamaged += ApplyKnockback;
+			damagable.OnDead += OnDead;
 		}
 
 		[Header("DEBUG")]
@@ -88,7 +102,7 @@ namespace Defense.Controller
 			UpdateCooltimeTick();
 			UpdateKnockbackRemainedTime();
 
-			if (IsKnockBack || isEnemyDead) return;
+			if (IsKnockBack || unitStat.IsDied) return;
 			OnUpdateUnit();
 		}
 
@@ -102,8 +116,8 @@ namespace Defense.Controller
 			if (isAttacking)
 			{
 				if (!IsAbleToAttack()) return;
-				
-				if (IsAbleToUseSkill())
+
+				if (unitStat.IsAbleToUseSkill)
 				{
 					StartSkillAnim();
 				}
@@ -124,7 +138,7 @@ namespace Defense.Controller
 		public void InitUnit(int unitId)
 		{
 			unitData = Managers.Resource.GetUnitData(unitId);
-			CacheStatData(unitData.StatsByLevel[0]);
+			unitStat.CacheStatData(unitData, 0);
 
 			targets = new Collider[unitData.MaxDetectCounts];
 		}
@@ -159,10 +173,9 @@ namespace Defense.Controller
 
 				for (int i = 0; i < targetCounts; i++)
 				{
-					if (targets[i] == null) break; 
-					if (targets[i].GetComponent<IDamagable>() == null ||
-					!targets[i].GetComponent<IDamagable>().IsAbleToTargeted(unitData.AttackDelay)) continue;
-
+					if (targets[i] == null) break;
+					if (!targets[i].TryGetComponent<IGetComponent<Damagable>>(out var target) ||
+						!target.GetComponent().IsAbleToTargeted(unitData.AttackDelay))	continue;
 					float distance = Vector3.SqrMagnitude(base.transform.position - targets[i].transform.position);
 
 					if (distance < minDistance)

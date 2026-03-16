@@ -2308,7 +2308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed9e61bb9b760b44bbadbfe4933cce17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameUI: {fileID: 1431563164}
+  gameUI: {fileID: 1431563164}
 --- !u!4 &1069943311 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: c5f43a47e4b64c14da6e0081f639fdd3, type: 3}
@@ -3347,9 +3347,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   personPrefab: {fileID: 8943890402457912210, guid: 5f353315aef964c41b2776eb6e473066, type: 3}
   testCount: 1
-  towerPrefab: {fileID: 843509316408124132, guid: 3f032cea426db0f4baaacc9b25fafd59, type: 3}
-  magePrefab: {fileID: 3657642983252307198, guid: aaa529521eeb0ee4185ca85987a4c3d4, type: 3}
-  archerPrefab: {fileID: 1582532992317111289, guid: 3b1e8c1faed3f3e44aa0ebf280747c56, type: 3}
   slotPrefab: {fileID: 5504582280501421385, guid: ad58bd08bbf000247972d08dea8a3183, type: 3}
   timeScale: 1
 --- !u!114 &1811063209
