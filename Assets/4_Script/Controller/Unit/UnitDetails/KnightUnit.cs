@@ -8,9 +8,9 @@ namespace Defense.Controller
 	{
 		public override void Attack(Transform target)
 		{
-			if (target == null || !target.TryGetComponent<IGetComponent<Damagable>>(out var damagable)) return;
+			if (target == null || !target.TryGetComponent<Damagable>(out var damagable)) return;
 
-			damagable.GetComponent().GetImmediateDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower);
+			damagable.GetImmediateDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower);
 		}
 
 		public override bool IsSameUnit(int unitId, int level)

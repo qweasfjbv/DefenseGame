@@ -10,8 +10,8 @@ namespace Defense.Controller
 	{
 		public override void Attack(Transform target)
 		{
-			if (target == null || !target.TryGetComponent<IGetComponent<Damagable>>(out var damagable)) return;
-			damagable.GetComponent().ReserveDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower, unitData.AttackDelay);
+			if (target == null || !target.TryGetComponent<Damagable>(out var damagable)) return;
+			damagable.ReserveDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower, unitData.AttackDelay);
 
 			TrailBase tb = PoolingManager.Instance.Spawn(Utils.ProjectileType.Lightning, unitData.AttackDelay).GetComponent<TrailBase>();
 			tb.SetTrail(transform.position, target, unitData.AttackDelay);
@@ -26,7 +26,7 @@ namespace Defense.Controller
 		{
 			// HACK - 스킬 테스트용
 			if (targets == null || targets[0] == null) return;
-			targets[0].GetComponent<IGetComponent<Damagable>>().GetComponent().GetImmediateDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower);
+			targets[0].GetComponent<Damagable>().GetImmediateDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower);
 			PoolingManager.Instance.SpawnParticle(Utils.ParticleType.Lightning, targets[0].position);
 		}
 	}

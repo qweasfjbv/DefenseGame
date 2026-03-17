@@ -56,8 +56,6 @@ namespace Defense.Controller
 	public partial class UnitController
 	{
 
-		private Transform attackTarget = null;
-
 		private int skillTargetCount = 0;
 		private Transform[] skillTargets = new Transform[10];
 
@@ -66,35 +64,6 @@ namespace Defense.Controller
 			animator.SetBool(animIDDeath, false);
 			unitStat.CacheStatData(unitData, 0);
 		}
-
-		/** IAttackable Interface **/
-		public bool IsAbleToAttack()
-		{
-			return currentAttackCooltime < 0f;
-		}
-		public void StartAttackAnim()
-		{
-			if (targetTransform == null)
-			{
-				isAttacking = false;
-				isChasing = false;
-				return;
-			}
-
-			attackTarget = targetTransform;
-			base.transform.LookAt(attackTarget);
-			animator.SetFloat(animIDSpeed, 0);
-			animator.SetTrigger(animIDAttack);
-			animator.SetFloat(animIDAttackMT, attackClipLength / unitData.AttackCooltime);
-
-			currentAttackCooltime = unitData.AttackCooltime;
-		}
-		public void UpdateCooltimeTick()
-		{
-			if (currentAttackCooltime >= 0f)
-				currentAttackCooltime -= Time.deltaTime;
-		}
-
 
 		/** ISkillable Interface **/
 		public bool IsAbleToUseSkill()

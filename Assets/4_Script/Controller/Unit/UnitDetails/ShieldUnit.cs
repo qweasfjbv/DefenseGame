@@ -1,4 +1,3 @@
-using Defense.Interfaces;
 using UnityEngine;
 
 namespace Defense.Controller

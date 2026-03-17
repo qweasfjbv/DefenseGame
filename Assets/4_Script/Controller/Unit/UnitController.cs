@@ -11,9 +11,8 @@ namespace Defense.Controller
 {
 	[RequireComponent(typeof(UnitStat))]
 	[RequireComponent(typeof(Damagable))]
+	[RequireComponent(typeof(Attackable))]
 	public abstract partial class UnitController : MonoBehaviour
-		,IAttackable
-		,IGetComponent<Damagable>
 		,ISkillable
 	{
 		/** Components **/
@@ -21,8 +20,7 @@ namespace Defense.Controller
 
 		private UnitStat unitStat = null;
 		private Damagable damagable = null;
-
-		public Damagable GetComponent() => damagable;
+		private Attackable attackable = null;
 
 		/** SO Datas **/
 		protected UnitData unitData = null;
@@ -99,7 +97,6 @@ namespace Defense.Controller
 			if (!isInGame) return;
 
 			if (unitData == null) return;
-			UpdateCooltimeTick();
 			UpdateKnockbackRemainedTime();
 
 			if (IsKnockBack || unitStat.IsDied) return;
@@ -174,8 +171,8 @@ namespace Defense.Controller
 				for (int i = 0; i < targetCounts; i++)
 				{
 					if (targets[i] == null) break;
-					if (!targets[i].TryGetComponent<IGetComponent<Damagable>>(out var target) ||
-						!target.GetComponent().IsAbleToTargeted(unitData.AttackDelay))	continue;
+					if (!targets[i].TryGetComponent<Damagable>(out var target) ||
+						!target.IsAbleToTargeted(unitData.AttackDelay))	continue;
 					float distance = Vector3.SqrMagnitude(base.transform.position - targets[i].transform.position);
 
 					if (distance < minDistance)

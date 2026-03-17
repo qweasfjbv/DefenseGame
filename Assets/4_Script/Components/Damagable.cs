@@ -55,6 +55,7 @@ namespace Defense.Components
 			isTargetFlagDirty = false;
 			return isAbleToTargeted;
 		}
+		
 		public void ReserveDamage(DamageType type, float damage, float duration)
 		{
 			if (stat.IsDied) return;
@@ -107,6 +108,7 @@ namespace Defense.Components
 				onDead?.Invoke();
 			}
 		}
+
 		private void OnDestroy()
 		{
 			foreach (var res in reservedDamage.Values)
