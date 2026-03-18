@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using Defense.Controller;
 using Defense.Manager;
 using Defense.Utils;
 using System;
@@ -9,6 +8,49 @@ using UnityEngine;
 
 namespace Defense.Components
 {
+	public class ReservationKey : IComparable<ReservationKey>
+	{
+		private int dID;
+		private float time;
+
+		public float Time => time;
+
+		public ReservationKey(int dID, float time)
+		{
+			this.dID = dID;
+			this.time = time;
+		}
+
+		public int CompareTo(ReservationKey other)
+		{
+			if (other == null) return 1;
+
+			int timeComparison = time.CompareTo(other.time);
+			if (timeComparison != 0)
+				return timeComparison;
+
+			return dID.CompareTo(other.dID);
+		}
+	}
+
+	public class DamageReservation
+	{
+		private float damage;
+		private DamageType type;
+		private CancellationTokenSource cancellationTokenSource;
+
+		public float Damage => damage;
+		public DamageType Type => type;
+		public CancellationTokenSource CTS => cancellationTokenSource;
+
+		public DamageReservation(CancellationTokenSource cancellationTokenSource, float damage, DamageType type)
+		{
+			this.cancellationTokenSource = cancellationTokenSource;
+			this.damage = damage;
+			this.type = type;
+		}
+	}
+
 	public class Damagable : MonoBehaviour
 	{
 		private StatBase stat = null;
@@ -55,6 +97,7 @@ namespace Defense.Components
 			isTargetFlagDirty = false;
 			return isAbleToTargeted;
 		}
+		
 		public void ReserveDamage(DamageType type, float damage, float duration)
 		{
 			if (stat.IsDied) return;
@@ -107,6 +150,7 @@ namespace Defense.Components
 				onDead?.Invoke();
 			}
 		}
+
 		private void OnDestroy()
 		{
 			foreach (var res in reservedDamage.Values)

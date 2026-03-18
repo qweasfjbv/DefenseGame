@@ -984,7 +984,10 @@ GameObject:
   - component: {fileID: 194743350814500540}
   - component: {fileID: 5049363522302206995}
   - component: {fileID: -35822860171707106}
-  - component: {fileID: 8835798270423547240}
+  - component: {fileID: 8627939290974857516}
+  - component: {fileID: -1890156775536981294}
+  - component: {fileID: -2575980600984594816}
+  - component: {fileID: 3466723144308218683}
   m_Layer: 11
   m_Name: 0_Shield_Common
   m_TagString: Untagged
@@ -1069,7 +1072,7 @@ MonoBehaviour:
   bakeValues: []
   outlineMaskMaterial: {fileID: 2100000, guid: 003ee8011e885f2488b68a3c3e579f8d, type: 2}
   outlineFillMaterial: {fileID: 2100000, guid: ea689b3f91b56a0458b89c03dae4a19e, type: 2}
---- !u!114 &8835798270423547240
+--- !u!114 &8627939290974857516
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1078,7 +1081,51 @@ MonoBehaviour:
   m_GameObject: {fileID: 6249685490653146341}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c5899adf05b57943887dc8ec1763220, type: 3}
+  m_Script: {fileID: 11500000, guid: 9759ce6270773964a8cbdb6b5018fb91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-1890156775536981294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6249685490653146341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a5eb4182f69e542b6865b031669379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-2575980600984594816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6249685490653146341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 117d638f0a6c8424e8cf958b8e96b3c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 0
+  currentAtk: 0
+  currentDef: 0
+  currentMP: 0
+  maxMP: 3.4028235e+38
+  attackCooltime: 0
+  damageType: 0
+  attackDelay: 0
+--- !u!114 &3466723144308218683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6249685490653146341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ca0682733a2564092517009efd3835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemyId: 0

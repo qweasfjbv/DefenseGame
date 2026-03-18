@@ -1,63 +1,15 @@
 using Cysharp.Threading.Tasks;
 using Defense.Manager;
 using Defense.Utils;
-using System;
-using System.Threading;
 using UnityEngine;
 
 namespace Defense.Controller
 {
-	public class ReservationKey : IComparable<ReservationKey>
-	{
-		private int dID;
-		private float time;
-
-		public float Time => time;
-
-		public ReservationKey(int dID, float time)
-		{
-			this.dID = dID;
-			this.time = time;
-		}
-
-		public int CompareTo(ReservationKey other)
-		{
-			if (other == null) return 1;
-
-			int timeComparison = time.CompareTo(other.time);
-			if (timeComparison != 0)
-				return timeComparison;
-
-			return dID.CompareTo(other.dID);
-		}
-	}
-
-	public class DamageReservation
-	{
-		private float damage;
-		private DamageType type;
-		private CancellationTokenSource cancellationTokenSource;
-
-		public float Damage => damage;
-		public DamageType Type => type;
-		public CancellationTokenSource CTS => cancellationTokenSource;
-
-		public DamageReservation(CancellationTokenSource cancellationTokenSource, float damage, DamageType type)
-		{
-			this.cancellationTokenSource = cancellationTokenSource;
-			this.damage = damage;
-			this.type = type;
-		}
-	}
-
 	/// <summary>
 	/// UnitController의 전투 관련 인터페이스 구현 및 함수 구현
 	/// </summary>
 	public partial class UnitController
 	{
-
-		private Transform attackTarget = null;
-
 		private int skillTargetCount = 0;
 		private Transform[] skillTargets = new Transform[10];
 
@@ -66,35 +18,22 @@ namespace Defense.Controller
 			animator.SetBool(animIDDeath, false);
 			unitStat.CacheStatData(unitData, 0);
 		}
-
-		/** IAttackable Interface **/
-		public bool IsAbleToAttack()
+		public void StartAttackAnim(Transform target)
 		{
-			return currentAttackCooltime < 0f;
-		}
-		public void StartAttackAnim()
-		{
-			if (targetTransform == null)
+			if (target == null)
 			{
-				isAttacking = false;
-				isChasing = false;
+				OnStopTargetting();
 				return;
 			}
 
-			attackTarget = targetTransform;
-			base.transform.LookAt(attackTarget);
+			transform.LookAt(target);
 			animator.SetFloat(animIDSpeed, 0);
 			animator.SetTrigger(animIDAttack);
 			animator.SetFloat(animIDAttackMT, attackClipLength / unitData.AttackCooltime);
 
-			currentAttackCooltime = unitData.AttackCooltime;
+			attackable.AttackTarget = target;
+			attackable.ResetCooltime();
 		}
-		public void UpdateCooltimeTick()
-		{
-			if (currentAttackCooltime >= 0f)
-				currentAttackCooltime -= Time.deltaTime;
-		}
-
 
 		/** ISkillable Interface **/
 		public bool IsAbleToUseSkill()
@@ -106,8 +45,7 @@ namespace Defense.Controller
 		{
 			if (targetTransform == null)
 			{
-				isAttacking = false;
-				isChasing = false;
+				OnStopTargetting();
 				return;
 			}
 
@@ -121,7 +59,6 @@ namespace Defense.Controller
 			animator.SetFloat(animIDSkillMT, skillClipLength / unitData.SkillDuration);
 			
 			unitStat.OnUseSkill();
-			currentAttackCooltime = unitData.SkillDuration;
 		}
 
 		/** Dying System **/
