@@ -13,6 +13,10 @@ namespace Defense.Components
 			currentDef = unitData.StatsByLevel[level].DefensePower;
 			currentMP = 0f;
 			maxMP = unitData.StatsByLevel[level].MaxMP;
+
+			damageType = unitData.DamageType;
+			attackCooltime = unitData.AttackCooltime;
+			attackDelay = unitData.AttackDelay;
 		}
 	}
 }

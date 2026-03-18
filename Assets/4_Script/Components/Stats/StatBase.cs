@@ -20,12 +20,19 @@ namespace Defense.Components
 		[SerializeField, ReadOnly] protected float currentDef = 0f;
 		[SerializeField, ReadOnly] protected float currentMP = 0f;
 		[SerializeField, ReadOnly] protected float maxMP = float.MaxValue;
+		[SerializeField, ReadOnly] protected float attackCooltime = 0f;
+		[SerializeField, ReadOnly] protected DamageType damageType;
+		[SerializeField, ReadOnly] protected float attackDelay = 0f;
 
 		public virtual float CurrentHP => currentHP;
 		public virtual float CurrentAtk => currentAtk;
 		public virtual float CurrentDef => currentDef;
 		public virtual float CurrentMP => currentMP;
 		public virtual float MaxMP => maxMP;
+		public virtual float AttackCooltime => attackCooltime;
+		public virtual DamageType DamageType => damageType;
+		public virtual float AttackDelay => attackDelay;
+
 
 		public virtual bool IsDied => currentHP <= 0f;
 		public virtual bool IsAbleToUseSkill => currentMP >= maxMP;

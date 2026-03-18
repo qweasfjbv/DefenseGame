@@ -1,22 +1,11 @@
 using Defense.Components;
-using Defense.Interfaces;
 using Defense.Manager;
-using Defense.VFX;
 using UnityEngine;
 
 namespace Defense.Controller
 {
 	public class MagicUnit : UnitController
 	{
-		public override void Attack(Transform target)
-		{
-			if (target == null || !target.TryGetComponent<Damagable>(out var damagable)) return;
-			damagable.ReserveDamage(unitData.DamageType, unitData.StatsByLevel[0].AttackPower, unitData.AttackDelay);
-
-			TrailBase tb = PoolingManager.Instance.Spawn(Utils.ProjectileType.Lightning, unitData.AttackDelay).GetComponent<TrailBase>();
-			tb.SetTrail(transform.position, target, unitData.AttackDelay);
-		}
-
 		public override bool IsSameUnit(int unitId, int level)
 		{
 			return unitId == 2;

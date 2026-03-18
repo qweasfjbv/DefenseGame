@@ -138,8 +138,11 @@ GameObject:
   - component: {fileID: 5905989098284155602}
   - component: {fileID: 978840697265607253}
   - component: {fileID: -2037799034862539636}
-  - component: {fileID: 2196435989473946127}
   - component: {fileID: -3829479548441350750}
+  - component: {fileID: 7994553964868811022}
+  - component: {fileID: 8686472039614003468}
+  - component: {fileID: 3294274989849022184}
+  - component: {fileID: -554703125244436421}
   m_Layer: 11
   m_Name: 0_Archer_Common
   m_TagString: Untagged
@@ -207,24 +210,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2196435989473946127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582532992317111289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d15f4edfc06ed9743afb7d51a7a00ede, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isPlayerUnit: 0
-  routeId: 0
-  enemyId: 1
-  hoverHeight: 1
-  hoverDuration: 0.2
-  moveDuration: 0.2
 --- !u!114 &-3829479548441350750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,6 +227,64 @@ MonoBehaviour:
   bakeValues: []
   outlineMaskMaterial: {fileID: 2100000, guid: 003ee8011e885f2488b68a3c3e579f8d, type: 2}
   outlineFillMaterial: {fileID: 2100000, guid: ea689b3f91b56a0458b89c03dae4a19e, type: 2}
+--- !u!114 &7994553964868811022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582532992317111289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1296521c67fe9143a40785fb70d78c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectileType: 0
+--- !u!114 &8686472039614003468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582532992317111289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36a5eb4182f69e542b6865b031669379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3294274989849022184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582532992317111289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 117d638f0a6c8424e8cf958b8e96b3c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 0
+  currentAtk: 0
+  currentDef: 0
+  currentMP: 0
+  maxMP: 3.4028235e+38
+  attackCooltime: 0
+  damageType: 0
+  attackDelay: 0
+--- !u!114 &-554703125244436421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582532992317111289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86ca0682733a2564092517009efd3835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyId: 0
 --- !u!1 &1654005336861553205
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,11 +4,6 @@ namespace Defense.Controller
 {
 	public class ShieldUnit : UnitController
 	{
-		public override void Attack(Transform target)
-		{
-			// TODO -
-		}
-
 		public override bool IsSameUnit(int unitId, int level)
 		{
 			return unitId == 3;

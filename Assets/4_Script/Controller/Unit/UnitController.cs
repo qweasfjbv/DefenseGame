@@ -12,7 +12,7 @@ namespace Defense.Controller
 	[RequireComponent(typeof(UnitStat))]
 	[RequireComponent(typeof(Damagable))]
 	[RequireComponent(typeof(Attackable))]
-	public abstract partial class UnitController : MonoBehaviour
+	public partial class UnitController : MonoBehaviour
 		,ISkillable
 	{
 		/** Components **/
@@ -53,22 +53,21 @@ namespace Defense.Controller
 		private int animIDSkillMT = 0;
 
 		/** State Variables **/
-		private float currentAttackCooltime = 0f;
 		private bool isChasing = false;
-		private bool isAttacking = false;
-		private bool isInGame = false;			// Wait for game start
+		private bool isInGame = false;          // Wait for game start
 
-		public abstract bool IsSameUnit(int unitId, int rarity);
-		public abstract void Attack(Transform target);
-		protected abstract void ExecuteSkill(Transform[] targets, int targetCounts);
+		public virtual bool IsSameUnit(int unitId, int rarity) { return false; }
+		protected virtual void ExecuteSkill(Transform[] targets, int targetCounts) { }
 
 		private void Awake()
 		{
 			animator = GetComponent<Animator>();
 			unitStat = GetComponent<UnitStat>();
 			damagable = GetComponent<Damagable>();
+			attackable = GetComponent<Attackable>();
 
 			damagable.Init(unitStat);
+			attackable.Init(unitStat);
 
 			attackClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_ATTACK);
 			damagedClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_DAMAGE);
@@ -110,9 +109,9 @@ namespace Defense.Controller
 		{
 			CheckNearbyTarget();
 
-			if (isAttacking)
+			if (attackable.IsAttacking)
 			{
-				if (!IsAbleToAttack()) return;
+				if (!attackable.IsAbleToAttack) return;
 
 				if (unitStat.IsAbleToUseSkill)
 				{
@@ -120,13 +119,18 @@ namespace Defense.Controller
 				}
 				else
 				{
-					StartAttackAnim();
+					StartAttackAnim(targetTransform);
 				}
 			}
 			else if (isChasing)
 			{
 				ChaseTarget();
 			}
+		}
+		public void OnStopTargetting()
+		{
+			attackable.IsAttacking = false;
+			isChasing = false;
 		}
 
 		/// <summary>
@@ -194,7 +198,7 @@ namespace Defense.Controller
 
 			if (targetTransform != null && Vector3.SqrMagnitude(base.transform.position- targetTransform.position) <= unitData.AttackRange * unitData.AttackRange)
 			{
-				isAttacking = true;
+				attackable.IsAttacking = true;
 				isChasing = false;
 			}
 		}
