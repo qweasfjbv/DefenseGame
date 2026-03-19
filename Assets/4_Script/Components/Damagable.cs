@@ -53,7 +53,8 @@ namespace Defense.Components
 
 	public class Damagable : MonoBehaviour
 	{
-		private StatBase stat = null;
+		private HealthStat healthStat = null;
+		private DefenseStat defenseStat = null;
 
 		private SortedDictionary<ReservationKey, DamageReservation> reservedDamage = new();
 
@@ -64,28 +65,31 @@ namespace Defense.Components
 		private event Action onDead;
 		private event Action onDamaged;
 
+		public bool IsDead  => healthStat.IsDead;
 		public Action OnDead { get => onDead; set => onDead = value; }
 		public Action OnDamaged { get => onDamaged; set => onDamaged = value; }
 
-		public void Init(StatBase stat)
+		public void Init(StatContainer statContainer)
 		{
-			this.stat = stat;
+			if (!statContainer.TryGet(out healthStat)) Debug.LogWarning("Health Stat doesn't exists");
+			if (!statContainer.TryGet(out defenseStat)) Debug.LogWarning("Defense Stat doesn't exists");
+
 			damageId = 0;
 			isTargetFlagDirty = true;
 		}
 
 		public bool IsAbleToTargeted(float duration)
 		{
-			if (stat.IsDied) return false;
+			if (healthStat.IsDead) return false;
 			// TODO - 리턴 정확한 값으로 수정 필요
 			if (!isTargetFlagDirty) return isAbleToTargeted;
 
-			float tmpHP = stat.CurrentHP;
+			float tmpHP = healthStat.CurrentHP;
 			float lastTime = 0;
 
 			foreach (var res in reservedDamage)
 			{
-				tmpHP -= Calculation.CalculateDamage(stat.CurrentDef, res.Value.Type, res.Value.Damage);
+				tmpHP -= Calculation.CalculateDamage(defenseStat.CurrentDefense.Value, res.Value.Type, res.Value.Damage);
 				if (tmpHP <= 0f)
 				{
 					lastTime = res.Key.Time;
@@ -100,7 +104,7 @@ namespace Defense.Components
 		
 		public void ReserveDamage(DamageType type, float damage, float duration)
 		{
-			if (stat.IsDied) return;
+			if (healthStat.IsDead) return;
 
 			var cts = new CancellationTokenSource();
 			ReservationKey resKey = new ReservationKey(++damageId, Time.time + duration);
@@ -121,7 +125,7 @@ namespace Defense.Components
 				await UniTask.Delay((int)(duration * 1000));
 
 				if (!reservedDamage[resKey].CTS.IsCancellationRequested)
-					GetImmediateDamage(type, damage);
+					TakeImmediateDamage(type, damage);
 			}
 			catch (OperationCanceledException)
 			{
@@ -133,11 +137,12 @@ namespace Defense.Components
 			}
 		}
 
-		public void GetImmediateDamage(DamageType type, float damage)
+		public void TakeImmediateDamage(DamageType type, float damage)
 		{
-			if (stat.IsDied) return;
+			if (healthStat.IsDead) return;
 
-			float trueDamage = stat.GetDamage(type, damage);
+			float trueDamage = Calculation.CalculateDamage(defenseStat.CurrentDefense.Value, type, damage);
+			healthStat.TakeTrueDamage(trueDamage);
 			UIManager.GameUI.ShowDamage(transform.position + Vector3.up * 1.8f, trueDamage, type, HitResultType.Normal);
 			CheckIfDied();
 			onDamaged?.Invoke();
@@ -145,7 +150,7 @@ namespace Defense.Components
 
 		public void CheckIfDied()
 		{
-			if (stat.IsDied)
+			if (healthStat.IsDead)
 			{
 				onDead?.Invoke();
 			}
