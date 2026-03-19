@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: -3829479548441350750}
   - component: {fileID: 7994553964868811022}
   - component: {fileID: 8686472039614003468}
-  - component: {fileID: 3294274989849022184}
+  - component: {fileID: 1519602079077570042}
   - component: {fileID: -554703125244436421}
   m_Layer: 11
   m_Name: 0_Archer_Common
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a5eb4182f69e542b6865b031669379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3294274989849022184
+--- !u!114 &1519602079077570042
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -261,17 +261,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1582532992317111289}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 117d638f0a6c8424e8cf958b8e96b3c9, type: 3}
+  m_Script: {fileID: 11500000, guid: 101d016c4d9834d458dbf83a916199d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHP: 0
-  currentAtk: 0
-  currentDef: 0
-  currentMP: 0
-  maxMP: 3.4028235e+38
-  attackCooltime: 0
-  damageType: 0
-  attackDelay: 0
 --- !u!114 &-554703125244436421
 MonoBehaviour:
   m_ObjectHideFlags: 0

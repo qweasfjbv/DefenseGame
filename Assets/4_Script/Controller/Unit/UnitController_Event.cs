@@ -5,7 +5,6 @@ namespace Defense.Controller
 	/// </summary>
 	public partial class UnitController
 	{
-
 		public void OnSkill()
 		{
 			ExecuteSkill(skillTargets, skillTargetCount);

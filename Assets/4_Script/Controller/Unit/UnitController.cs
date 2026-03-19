@@ -1,5 +1,4 @@
 using Defense.Components;
-using Defense.Interfaces;
 using Defense.Manager;
 using Defense.Props;
 using Defense.Utils;
@@ -9,21 +8,22 @@ using UnityEngine;
 
 namespace Defense.Controller
 {
-	[RequireComponent(typeof(UnitStat))]
 	[RequireComponent(typeof(Damagable))]
 	[RequireComponent(typeof(Attackable))]
 	public partial class UnitController : MonoBehaviour
-		,ISkillable
+		,IStatOwner
 	{
 		/** Components **/
 		private Animator animator = null;
-
-		private UnitStat unitStat = null;
 		private Damagable damagable = null;
 		private Attackable attackable = null;
+		private Skillable skillable = null;
 
-		/** SO Datas **/
-		protected UnitData unitData = null;
+		/** Stats **/
+		private UnitData unitData = null;				// SO Data
+		private StatContainer statContainer = null;
+
+		public StatContainer StatContainer => statContainer;
 
 		/** Target Infos **/
 		private Collider[] targets;
@@ -62,12 +62,9 @@ namespace Defense.Controller
 		private void Awake()
 		{
 			animator = GetComponent<Animator>();
-			unitStat = GetComponent<UnitStat>();
 			damagable = GetComponent<Damagable>();
 			attackable = GetComponent<Attackable>();
-
-			damagable.Init(unitStat);
-			attackable.Init(unitStat);
+			skillable = GetComponent<Skillable>();
 
 			attackClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_ATTACK);
 			damagedClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_DAMAGE);
@@ -88,6 +85,57 @@ namespace Defense.Controller
 			damagable.OnDead += OnDead;
 		}
 
+		private void Start()
+		{
+			InitStatContainer(0);   // HACK - 임시로 0레벨 설정
+			damagable.Init(statContainer);
+			attackable.Init(statContainer);
+			skillable.Init(statContainer);
+		}
+
+
+		/// <summary>
+		/// Unit을 초기화합니다.
+		/// </summary>
+		public void InitUnit(int unitId)
+		{
+			unitData = Managers.Resource.GetUnitData(unitId);
+			targets = new Collider[unitData.MaxDetectCounts];
+		}
+
+		private void InitStatContainer(int level)
+		{
+			statContainer = new StatContainer();
+			statContainer.AddStat<HealthStat>(new HealthStat(unitData.StatsByLevel[level].MaxHealth));
+			statContainer.AddStat<ManaStat>(new ManaStat(unitData.StatsByLevel[level].MaxMP));
+			statContainer.AddStat<MovementStat>(new MovementStat(unitData.MoveSpeed));
+			statContainer.AddStat<DefenseStat>(new DefenseStat(unitData.StatsByLevel[level].DefensePower));
+			statContainer.AddStat<AttackStat>(new AttackStat(unitData.DamageType,
+				unitData.StatsByLevel[level].AttackPower,
+				unitData.AttackCooltime,
+				unitData.AttackDelay));
+		}
+
+		public void SetPlayerTeam(int playerIdx, int slotID)
+		{
+			mySlotID = slotID;
+
+			Quaternion lookRot = Quaternion.LookRotation(new Vector3(0, 0, playerIdx == 0 ? 1 : -1));
+			base.transform.rotation = lookRot;
+
+			if (playerIdx == 0)
+			{
+				gameObject.layer = Constants.INTLAYER_PLAYER_1;
+				targetLayer = Constants.LAYER_PLAYER_2;
+			}
+			else if (playerIdx == 1)
+			{
+				gameObject.layer = Constants.INTLAYER_PLAYER_2;
+				targetLayer = Constants.LAYER_PLAYER_1;
+			}
+			else Debug.LogError("Unit Initizlization - wrong parameter \n `playerIdx` must be 0 or 1.");
+		}
+
 		[Header("DEBUG")]
 		[ReadOnly] public int enemyId;
 
@@ -98,7 +146,7 @@ namespace Defense.Controller
 			if (unitData == null) return;
 			UpdateKnockbackRemainedTime();
 
-			if (IsKnockBack || unitStat.IsDied) return;
+			if (IsKnockBack || damagable.IsDead) return;
 			OnUpdateUnit();
 		}
 
@@ -109,11 +157,11 @@ namespace Defense.Controller
 		{
 			CheckNearbyTarget();
 
-			if (attackable.IsAttacking)
+			if (attackable.IsAbleToAttack)
 			{
-				if (!attackable.IsAbleToAttack) return;
+				if (attackable.IsAttacking || skillable.IsSkilling) return;
 
-				if (unitStat.IsAbleToUseSkill)
+				if (skillable.IsAbleToUseSkill)
 				{
 					StartSkillAnim();
 				}
@@ -129,38 +177,8 @@ namespace Defense.Controller
 		}
 		public void OnStopTargetting()
 		{
-			attackable.IsAttacking = false;
+			attackable.IsAbleToAttack = false;
 			isChasing = false;
-		}
-
-		/// <summary>
-		/// Unit을 초기화합니다.
-		/// </summary>
-		public void InitUnit(int unitId)
-		{
-			unitData = Managers.Resource.GetUnitData(unitId);
-			unitStat.CacheStatData(unitData, 0);
-
-			targets = new Collider[unitData.MaxDetectCounts];
-		}
-		public void SetPlayerTeam(int playerIdx, int slotID)
-		{
-			mySlotID = slotID;
-			
-			Quaternion lookRot = Quaternion.LookRotation(new Vector3(0, 0, playerIdx == 0 ? 1 : -1));
-			base.transform.rotation = lookRot;
-
-			if (playerIdx == 0)
-			{
-				gameObject.layer = Constants.INTLAYER_PLAYER_1;
-				targetLayer = Constants.LAYER_PLAYER_2;
-			}
-			else if (playerIdx == 1)
-			{
-				gameObject.layer = Constants.INTLAYER_PLAYER_2;
-				targetLayer = Constants.LAYER_PLAYER_1;
-			}
-			else Debug.LogError("Unit Initizlization - wrong parameter \n `playerIdx` must be 0 or 1.");
 		}
 
 		private int targetCounts = 0;
@@ -198,7 +216,7 @@ namespace Defense.Controller
 
 			if (targetTransform != null && Vector3.SqrMagnitude(base.transform.position- targetTransform.position) <= unitData.AttackRange * unitData.AttackRange)
 			{
-				attackable.IsAttacking = true;
+				attackable.IsAbleToAttack = true;
 				isChasing = false;
 			}
 		}

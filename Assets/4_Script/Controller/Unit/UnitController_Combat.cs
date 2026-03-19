@@ -16,7 +16,7 @@ namespace Defense.Controller
 		private void InitCombat()
 		{
 			animator.SetBool(animIDDeath, false);
-			unitStat.CacheStatData(unitData, 0);
+			statContainer.Reset();
 		}
 		public void StartAttackAnim(Transform target)
 		{
@@ -57,8 +57,7 @@ namespace Defense.Controller
 			animator.SetFloat(animIDSpeed, 0);
 			animator.SetTrigger(animIDSkill);
 			animator.SetFloat(animIDSkillMT, skillClipLength / unitData.SkillDuration);
-			
-			unitStat.OnUseSkill();
+			skillable.OnUseSkill();
 		}
 
 		/** Dying System **/

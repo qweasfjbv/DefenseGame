@@ -1217,8 +1217,8 @@ GameObject:
   - component: {fileID: 4091739581687859904}
   - component: {fileID: -6242261232702434363}
   - component: {fileID: -1757082623470760889}
-  - component: {fileID: -1745670364107776430}
   - component: {fileID: -2016504398822772926}
+  - component: {fileID: 1193024924748747601}
   m_Layer: 10
   m_Name: 0_Warrior_Common
   m_TagString: Untagged
@@ -1327,26 +1327,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a5eb4182f69e542b6865b031669379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-1745670364107776430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8943890402457912210}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 117d638f0a6c8424e8cf958b8e96b3c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHP: 0
-  currentAtk: 0
-  currentDef: 0
-  currentMP: 0
-  maxMP: 3.4028235e+38
-  attackCooltime: 0
-  damageType: 0
-  attackDelay: 0
 --- !u!114 &-2016504398822772926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1360,3 +1340,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyId: 0
+--- !u!114 &1193024924748747601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8943890402457912210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 101d016c4d9834d458dbf83a916199d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

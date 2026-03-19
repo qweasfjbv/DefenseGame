@@ -13,9 +13,9 @@ namespace Defense.Components
 		{
 			if (target == null || !target.TryGetComponent<Damagable>(out var damagable)) return;
 
-			damagable.ReserveDamage(stat.DamageType, stat.CurrentAtk, stat.AttackDelay);
-			TrailBase tb = PoolingManager.Instance.Spawn(projectileType, stat.AttackDelay).GetComponent<TrailBase>();
-			tb.SetTrail(transform.position, target, stat.AttackDelay);
+			damagable.ReserveDamage(attackStat.DamageType, attackStat.CurrentAttack.Value, attackStat.CurrentAttackDelay.Value);
+			TrailBase tb = PoolingManager.Instance.Spawn(projectileType, attackStat.CurrentAttackDelay.Value).GetComponent<TrailBase>();
+			tb.SetTrail(transform.position, target, attackStat.CurrentAttackDelay.Value);
 		}
 	}
 }
