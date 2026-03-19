@@ -75,29 +75,30 @@ namespace Defense.Components
 			if (!statContainer.TryGet(out defenseStat)) Debug.LogWarning("Defense Stat doesn't exists");
 
 			damageId = 0;
+			cachedLastTime = 0f;
 			isTargetFlagDirty = true;
 		}
 
+		private float cachedLastTime = 0f;
+		private float cachedTmpHP = 0f;		// 계산된 hp
 		public bool IsAbleToTargeted(float duration)
 		{
 			if (healthStat.IsDead) return false;
-			// TODO - 리턴 정확한 값으로 수정 필요
-			if (!isTargetFlagDirty) return isAbleToTargeted;
+			if (!isTargetFlagDirty) return (cachedTmpHP > 0f || (cachedTmpHP <= 0f && Time.time + duration < cachedLastTime));
 
-			float tmpHP = healthStat.CurrentHP;
-			float lastTime = 0;
+			cachedTmpHP = healthStat.CurrentHP;
 
 			foreach (var res in reservedDamage)
 			{
-				tmpHP -= Calculation.CalculateDamage(defenseStat.CurrentDefense.Value, res.Value.Type, res.Value.Damage);
-				if (tmpHP <= 0f)
+				cachedTmpHP -= Calculation.CalculateDamage(defenseStat.CurrentDefense.Value, res.Value.Type, res.Value.Damage);
+				if (cachedTmpHP <= 0f)
 				{
-					lastTime = res.Key.Time;
+					cachedLastTime = res.Key.Time;
 					break;
 				}
 			}
 
-			isAbleToTargeted = (tmpHP > 0f || (tmpHP <= 0f && Time.time + duration < lastTime));
+			isAbleToTargeted = (cachedTmpHP > 0f || (cachedTmpHP <= 0f && Time.time + duration < cachedLastTime));
 			isTargetFlagDirty = false;
 			return isAbleToTargeted;
 		}

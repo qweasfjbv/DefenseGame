@@ -64,10 +64,7 @@ namespace Defense.Controller
 			animator = GetComponent<Animator>();
 			damagable = GetComponent<Damagable>();
 			attackable = GetComponent<Attackable>();
-
-			InitStatContainer(0);	// HACK - 임시로 0레벨 설정
-			damagable.Init(statContainer);
-			attackable.Init(statContainer);
+			skillable = GetComponent<Skillable>();
 
 			attackClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_ATTACK);
 			damagedClipLength = animator.GetAnimationClipLength(Constants.ANIM_NAME_DAMAGE);
@@ -88,6 +85,24 @@ namespace Defense.Controller
 			damagable.OnDead += OnDead;
 		}
 
+		private void Start()
+		{
+			InitStatContainer(0);   // HACK - 임시로 0레벨 설정
+			damagable.Init(statContainer);
+			attackable.Init(statContainer);
+			skillable.Init(statContainer);
+		}
+
+
+		/// <summary>
+		/// Unit을 초기화합니다.
+		/// </summary>
+		public void InitUnit(int unitId)
+		{
+			unitData = Managers.Resource.GetUnitData(unitId);
+			targets = new Collider[unitData.MaxDetectCounts];
+		}
+
 		private void InitStatContainer(int level)
 		{
 			statContainer = new StatContainer();
@@ -99,6 +114,26 @@ namespace Defense.Controller
 				unitData.StatsByLevel[level].AttackPower,
 				unitData.AttackCooltime,
 				unitData.AttackDelay));
+		}
+
+		public void SetPlayerTeam(int playerIdx, int slotID)
+		{
+			mySlotID = slotID;
+
+			Quaternion lookRot = Quaternion.LookRotation(new Vector3(0, 0, playerIdx == 0 ? 1 : -1));
+			base.transform.rotation = lookRot;
+
+			if (playerIdx == 0)
+			{
+				gameObject.layer = Constants.INTLAYER_PLAYER_1;
+				targetLayer = Constants.LAYER_PLAYER_2;
+			}
+			else if (playerIdx == 1)
+			{
+				gameObject.layer = Constants.INTLAYER_PLAYER_2;
+				targetLayer = Constants.LAYER_PLAYER_1;
+			}
+			else Debug.LogError("Unit Initizlization - wrong parameter \n `playerIdx` must be 0 or 1.");
 		}
 
 		[Header("DEBUG")]
@@ -144,34 +179,6 @@ namespace Defense.Controller
 		{
 			attackable.IsAbleToAttack = false;
 			isChasing = false;
-		}
-
-		/// <summary>
-		/// Unit을 초기화합니다.
-		/// </summary>
-		public void InitUnit(int unitId)
-		{
-			unitData = Managers.Resource.GetUnitData(unitId);
-			targets = new Collider[unitData.MaxDetectCounts];
-		}
-		public void SetPlayerTeam(int playerIdx, int slotID)
-		{
-			mySlotID = slotID;
-			
-			Quaternion lookRot = Quaternion.LookRotation(new Vector3(0, 0, playerIdx == 0 ? 1 : -1));
-			base.transform.rotation = lookRot;
-
-			if (playerIdx == 0)
-			{
-				gameObject.layer = Constants.INTLAYER_PLAYER_1;
-				targetLayer = Constants.LAYER_PLAYER_2;
-			}
-			else if (playerIdx == 1)
-			{
-				gameObject.layer = Constants.INTLAYER_PLAYER_2;
-				targetLayer = Constants.LAYER_PLAYER_1;
-			}
-			else Debug.LogError("Unit Initizlization - wrong parameter \n `playerIdx` must be 0 or 1.");
 		}
 
 		private int targetCounts = 0;

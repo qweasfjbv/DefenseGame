@@ -334,8 +334,8 @@ GameObject:
   - component: {fileID: -6960495601560701859}
   - component: {fileID: -7127766076287942954}
   - component: {fileID: -3812570319283532274}
-  - component: {fileID: 7676661527564637504}
   - component: {fileID: -1845563857844269721}
+  - component: {fileID: 2396043036542383134}
   m_Layer: 11
   m_Name: 0_Mage_Common
   m_TagString: Untagged
@@ -445,26 +445,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36a5eb4182f69e542b6865b031669379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7676661527564637504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3657642983252307198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 117d638f0a6c8424e8cf958b8e96b3c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHP: 0
-  currentAtk: 0
-  currentDef: 0
-  currentMP: 0
-  maxMP: 3.4028235e+38
-  attackCooltime: 0
-  damageType: 0
-  attackDelay: 0
 --- !u!114 &-1845563857844269721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,6 +458,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyId: 0
+--- !u!114 &2396043036542383134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3657642983252307198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 101d016c4d9834d458dbf83a916199d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4094539410893100118
 GameObject:
   m_ObjectHideFlags: 0
