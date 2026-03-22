@@ -14,18 +14,32 @@ namespace Defense.Building
 	/// - 파괴 가능
 	/// 
 	/// </summary>
+	[RequireComponent(typeof(Damagable))]
 	public class BuildingBase : MonoBehaviour
-		, IGetComponent<Damagable>
 		, IResettable
     {
-		[SerializeField] private BuildingDataBase buildingData;
+		[SerializeField] protected BuildingDataBase buildingData;
 
-		private float currentHP = 0f;
-		private float currentDef = 0f;
+		private Damagable damagable = null;
 
-		protected virtual void Awake()
+		private StatContainer statContainer;
+
+		private void Awake()
+		{
+			damagable = GetComponent<Damagable>();
+
+			statContainer = new StatContainer();
+			statContainer.AddStat<HealthStat>(new HealthStat(buildingData.StatsByLevel[0].MaxHealth));
+			statContainer.AddStat<DefenseStat>(new DefenseStat(buildingData.StatsByLevel[0].DefensePower));
+
+			damagable.OnDead += OnDead;
+		}
+
+		private void Start()
 		{
 			PoolingManager.Instance.SpawnParticle(ParticleType.Build, transform.position);
+
+			damagable.Init(statContainer);
 		}
 
 		protected virtual void OnDisable()
@@ -33,22 +47,22 @@ namespace Defense.Building
 			PoolingManager.Instance.SpawnParticle(ParticleType.Build, transform.position);
 		}
 
-		public Damagable GetComponent()
+		/** Dying System **/
+		protected virtual void OnDead()
 		{
-			// TODO 
-			return null;
+			gameObject.SetActive(false);
 		}
+
 
 		/** IResettable Interface **/
 		public void OnGameReset()
 		{
-			throw new System.NotImplementedException();
+
 		}
 
 		public void OnWaveReset()
 		{
-			throw new System.NotImplementedException();
-		}
 
+		}
 	}
-}
+} 

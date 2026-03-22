@@ -1,12 +1,12 @@
 using Defense.Utils;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Defense.Components
 {
 	public interface IStat 
 	{
+		public void RegisterStat(ref Dictionary<StatType, Stat> targetToStatDict);
 		public void Reset();
 	}
 
@@ -103,6 +103,10 @@ namespace Defense.Components
 			maxHP.Reset();
 			currentHP = maxHP.Value;
 		}
+		public void RegisterStat(ref Dictionary<StatType, Stat> targetToStatDict)
+		{
+			targetToStatDict.Add(StatType.MaxHP, maxHP);
+		}
 
 		public void TakeTrueDamage(float damage)
 		{
@@ -139,6 +143,11 @@ namespace Defense.Components
 			maxMP.Reset();
 			currentMP = maxMP.Value;
 		}
+		public void RegisterStat(ref Dictionary<StatType, Stat> targetToStatDict)
+		{
+			targetToStatDict.Add(StatType.MaxMP, maxMP);
+		}
+
 
 		public void OnUseSkill()
 		{
@@ -172,8 +181,15 @@ namespace Defense.Components
 			currentAttackCooltime.Reset();
 			currentAttackDelay.Reset();
 		}
+		public void RegisterStat(ref Dictionary<StatType, Stat> targetToStatDict)
+		{
+			targetToStatDict.Add(StatType.AttackPower, currentAttack);
+			targetToStatDict.Add(StatType.AttackCooltime, currentAttackCooltime);
+			targetToStatDict.Add(StatType.AttackDelay, currentAttackDelay);
+		}
+
 	}
-	
+
 	public class DefenseStat : IStat
 	{
 		private Stat currentDefense;
@@ -189,6 +205,11 @@ namespace Defense.Components
 		{
 			currentDefense.Reset();
 		}
+		public void RegisterStat(ref Dictionary<StatType, Stat> targetToStatDict)
+		{
+			targetToStatDict.Add(StatType.DefensePower, currentDefense);
+		}
+
 	}
 
 	public class MovementStat : IStat
@@ -206,5 +227,10 @@ namespace Defense.Components
 		{
 			currentSpeed.Reset();
 		}
+		public void RegisterStat(ref Dictionary<StatType, Stat> targetToStatDict)
+		{
+			targetToStatDict.Add(StatType.MoveSpeed, currentSpeed);
+		}
+
 	}
 }
