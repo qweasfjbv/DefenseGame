@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 namespace Defense.Components
 {
 	public abstract class Attackable : MonoBehaviour
 	{
+		public Action OnAttackEvent;
+
 		protected AttackStat attackStat = null;
 
 		protected Transform attackTarget = null;
@@ -39,8 +42,10 @@ namespace Defense.Components
 			if (attackTarget == null) return;
 			
 			Attack(attackTarget);
+
 			// TODO - 마나 증가, 필요시
-		}
+			OnAttackEvent?.Invoke();
+        }
 
 		public void OnEndAttack()
 		{

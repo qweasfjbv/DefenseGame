@@ -122,27 +122,37 @@ namespace Defense.Components
 	{
 		private float currentMP;
 		private Stat maxMP;
+		private Stat mpPerAttack;
+		
 
 		public float CurrentMP => currentMP;
 		public Stat MaxMP => maxMP;
-
+		public Stat MpPerAttack => mpPerAttack;
 		public bool IsAbleToUseSkill => currentMP >= maxMP.Value;
 
-		public ManaStat(float maxMP)
+		public ManaStat(float maxMP, float mpPerAttack)
 		{
 			this.maxMP = new Stat(maxMP);
+			this.mpPerAttack = new Stat(mpPerAttack);
 			this.currentMP = maxMP;
 		}
 
 		public void Reset()
 		{
 			maxMP.Reset();
+			mpPerAttack.Reset();
 			currentMP = maxMP.Value;
 		}
 
 		public void OnUseSkill()
 		{
 			currentMP = 0f;
+		}
+
+		public void RecoverMP(float amount)
+		{
+			currentMP += amount;
+			currentMP = Mathf.Min(currentMP, maxMP.Value);
 		}
 	}
 

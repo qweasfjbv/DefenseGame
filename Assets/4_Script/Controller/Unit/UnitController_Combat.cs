@@ -10,8 +10,8 @@ namespace Defense.Controller
 	/// </summary>
 	public partial class UnitController
 	{
-		private int skillTargetCount = 0;
-		private Transform[] skillTargets = new Transform[10];
+		//private int skillTargetCount = 0;
+		//private Transform[] skillTargets = new Transform[10];
 
 		private void InitCombat()
 		{
@@ -35,12 +35,12 @@ namespace Defense.Controller
 			attackable.ResetCooltime();
 		}
 
-		/** ISkillable Interface **/
-		public bool IsAbleToUseSkill()
-		{
-			// LEGACY
-			return false;
-		}
+		///** ISkillable Interface **/
+		//public bool IsAbleToUseSkill()
+		//{
+		//	// LEGACY
+		//	return false;
+		//}
 		public void StartSkillAnim()
 		{
 			if (targetTransform == null)
@@ -50,14 +50,16 @@ namespace Defense.Controller
 			}
 
 			// HACK - 임시 스킬 테스트용
-			skillTargets[0] = targetTransform;
-			skillTargetCount = 1;
+			//skillTargets[0] = targetTransform;
+			//skillTargetCount = 1;
+
+			// 타겟 설정
+			skillable.AddTarget(targetTransform);
 
 			base.transform.LookAt(targetTransform);
 			animator.SetFloat(animIDSpeed, 0);
 			animator.SetTrigger(animIDSkill);
 			animator.SetFloat(animIDSkillMT, skillClipLength / unitData.SkillDuration);
-			skillable.OnUseSkill();
 		}
 
 		/** Dying System **/
@@ -91,6 +93,8 @@ namespace Defense.Controller
 		private float knockbackRemainedTime = 0f;
 		private void ApplyKnockback()
 		{
+			if (!unitData.UseKnockback) return;
+
 			knockbackRemainedTime = unitData.KnockbackDuration;
 
 			animator.SetFloat(animIDSpeed, 0f);

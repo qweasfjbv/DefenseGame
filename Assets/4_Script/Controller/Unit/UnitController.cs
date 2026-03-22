@@ -57,7 +57,7 @@ namespace Defense.Controller
 		private bool isInGame = false;          // Wait for game start
 
 		public virtual bool IsSameUnit(int unitId, int rarity) { return false; }
-		protected virtual void ExecuteSkill(Transform[] targets, int targetCounts) { }
+		//protected virtual void ExecuteSkill(Transform[] targets, int targetCounts) { }
 
 		private void Awake()
 		{
@@ -83,6 +83,7 @@ namespace Defense.Controller
 
 			damagable.OnDamaged += ApplyKnockback;
 			damagable.OnDead += OnDead;
+			attackable.OnAttackEvent += skillable != null ? skillable.OnAttack : null;
 		}
 
 		private void Start()
@@ -90,7 +91,7 @@ namespace Defense.Controller
 			InitStatContainer(0);   // HACK - 임시로 0레벨 설정
 			damagable.Init(statContainer);
 			attackable.Init(statContainer);
-			skillable.Init(statContainer);
+			skillable?.Init(statContainer);
 		}
 
 
@@ -107,7 +108,7 @@ namespace Defense.Controller
 		{
 			statContainer = new StatContainer();
 			statContainer.AddStat<HealthStat>(new HealthStat(unitData.StatsByLevel[level].MaxHealth));
-			statContainer.AddStat<ManaStat>(new ManaStat(unitData.StatsByLevel[level].MaxMP));
+			statContainer.AddStat<ManaStat>(new ManaStat(unitData.StatsByLevel[level].MaxMP, unitData.MPPerAttack));
 			statContainer.AddStat<MovementStat>(new MovementStat(unitData.MoveSpeed));
 			statContainer.AddStat<DefenseStat>(new DefenseStat(unitData.StatsByLevel[level].DefensePower));
 			statContainer.AddStat<AttackStat>(new AttackStat(unitData.DamageType,
@@ -147,8 +148,9 @@ namespace Defense.Controller
 			UpdateKnockbackRemainedTime();
 
 			if (IsKnockBack || damagable.IsDead) return;
+
 			OnUpdateUnit();
-		}
+        }
 
 		/// <summary>
 		/// Update logics for walking/chasing on the ground
@@ -159,11 +161,15 @@ namespace Defense.Controller
 
 			if (attackable.IsAbleToAttack)
 			{
-				if (attackable.IsAttacking || skillable.IsSkilling) return;
+				if (attackable.IsAttacking) return;
+				if (skillable != null && skillable.IsSkilling) return;
 
-				if (skillable.IsAbleToUseSkill)
+				if (skillable != null && skillable.IsAbleToUseSkill)
 				{
-					StartSkillAnim();
+					if (!skillable.IsSkilling)
+					{
+						StartSkillAnim();
+					}
 				}
 				else
 				{
@@ -175,6 +181,7 @@ namespace Defense.Controller
 				ChaseTarget();
 			}
 		}
+
 		public void OnStopTargetting()
 		{
 			attackable.IsAbleToAttack = false;
@@ -220,6 +227,7 @@ namespace Defense.Controller
 				isChasing = false;
 			}
 		}
+
 		private void ChaseTarget()
 		{
 			if (targetTransform == null)

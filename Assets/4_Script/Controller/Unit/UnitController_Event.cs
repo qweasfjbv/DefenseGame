@@ -5,10 +5,10 @@ namespace Defense.Controller
 	/// </summary>
 	public partial class UnitController
 	{
-		public void OnSkill()
-		{
-			ExecuteSkill(skillTargets, skillTargetCount);
-		}
+		//public void OnSkill()
+		//{
+		//	//ExecuteSkill(skillTargets, skillTargetCount);
+		//}
 
 		/** Game Cycle Events **/
 		public void OnEndStage()
