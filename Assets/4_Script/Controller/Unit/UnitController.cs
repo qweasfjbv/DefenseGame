@@ -3,7 +3,7 @@ using Defense.Manager;
 using Defense.Props;
 using Defense.Utils;
 using DG.Tweening;
-using IUtil;
+using Unity.Collections;
 using UnityEngine;
 
 namespace Defense.Controller
@@ -12,6 +12,7 @@ namespace Defense.Controller
 	[RequireComponent(typeof(Attackable))]
 	public partial class UnitController : MonoBehaviour
 		,IStatOwner
+		,ISlottable
 	{
 		/** Components **/
 		private Animator animator = null;
@@ -25,17 +26,13 @@ namespace Defense.Controller
 
 		public StatContainer StatContainer => statContainer;
 
+
 		/** Target Infos **/
 		private Collider[] targets;
 		private Transform targetTransform = null;
 		private Vector3 targetPosition = Vector3.zero;
 
-		/** Pre-load Variables **/
-		private PlacementSlot mySlot = null;
-		public PlacementSlot MySlot { get => mySlot; set => mySlot = value; }
-
 		private int targetLayer = 0;
-		private int mySlotID = -1;
 
 		private float attackClipLength = 0f;
 		private float damagedClipLength = 0f;
@@ -117,10 +114,8 @@ namespace Defense.Controller
 				unitData.AttackDelay));
 		}
 
-		public void SetPlayerTeam(int playerIdx, int slotID)
+		public void SetPlayerTeam(int playerIdx)
 		{
-			mySlotID = slotID;
-
 			Quaternion lookRot = Quaternion.LookRotation(new Vector3(0, 0, playerIdx == 0 ? 1 : -1));
 			base.transform.rotation = lookRot;
 
@@ -261,8 +256,10 @@ namespace Defense.Controller
 		public static float moveDuration = 0.2f;
 
 		private Tween currentTween = null;
-		private bool isDragging = false;
 
+		/** ISlottable Interface **/
+		public SlotType SlotType => SlotType.Unit;
+		public int ItemID => 1;		// HACK - SO 수정에서 UnitID 담도록 해야될듯
 		public void PickUp(float baseHeight)
 		{
 			if (currentTween != null) currentTween.Kill();
@@ -272,15 +269,24 @@ namespace Defense.Controller
 		}
 		public void DropTo(Vector3 targetSlotPos)
 		{
-			isDragging = false;
-
 			if (currentTween != null) currentTween.Kill();
-			base.transform.position = new Vector3(targetSlotPos.x, targetSlotPos.y + hoverHeight, targetSlotPos.z);
+			transform.position = new Vector3(targetSlotPos.x, targetSlotPos.y + hoverHeight, targetSlotPos.z);
 
 			Sequence seq = DOTween.Sequence();
 			seq.Append(transform.DOMoveY(targetSlotPos.y, hoverDuration).SetEase(Ease.InQuad));
 			currentTween = seq;
 		}
+		public void OnStartStage()
+		{
+			isInGame = true;
+		}
+		public void OnEndStage()
+		{
+			gameObject.SetActive(true);
+			InitCombat();
 
+			OnStopTargetting();
+			isInGame = false;
+		}
 	}
 }

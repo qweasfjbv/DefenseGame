@@ -48,8 +48,15 @@ namespace Defense.Utils
 
 	}
 
-	public enum BuffType
+	[System.Serializable]
+	public enum StatType
 	{
-
+		MaxHP,
+		MaxMP,
+		AttackPower,
+		AttackCooltime,
+		AttackDelay,
+		DefensePower,
+		MoveSpeed,
 	}
 }
