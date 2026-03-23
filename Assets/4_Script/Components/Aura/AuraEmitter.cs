@@ -32,6 +32,21 @@ namespace Defense.Components
 			collider.radius = buffRange;
 		}
 
+		public void OnStartStage()
+		{
+			collider.enabled = true;
+		}
+
+		public void OnEndStage()
+		{
+			collider.enabled = false;
+			
+			foreach(UnitController controller in targets)
+			{
+				controller.StatContainer.RemoveBuff(this);
+			}
+		}
+
 		private void OnEnable()
 		{
 			// TODO - Initial Scan Needed
@@ -42,11 +57,15 @@ namespace Defense.Components
 			if (((1 << other.gameObject.layer) & targetLayer) == 0) return;
 
 			targets.Add(other.GetComponent<UnitController>());
+			other.GetComponent<UnitController>().StatContainer.ApplyBuff(this, statType, buffValue);
 		}
 
 		private void OnTriggerExit(Collider other)
 		{
+			if (((1 << other.gameObject.layer) & targetLayer) == 0) return;
 
+			targets.Remove(other.GetComponent<UnitController>());
+			other.GetComponent<UnitController>().StatContainer.RemoveBuff(this, statType);
 		}
 
 		private void OnDisable()

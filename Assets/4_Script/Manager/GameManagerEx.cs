@@ -1,3 +1,4 @@
+using Defense.Building;
 using Defense.Controller;
 using Defense.Props;
 using System.Collections.Generic;
@@ -27,10 +28,9 @@ namespace Defense.Manager
 		}
 		#endregion
 
-		[SerializeField] private GameObject personPrefab;
-		[SerializeField] private int testCount;
-
 		[SerializeField] private GameObject slotPrefab;
+		[SerializeField] private GameObject wallPrefab;
+		[SerializeField] private GameObject flagPrefab;
 
 		[SerializeField, Range(0.5f, 3.0f)]
 		private float timeScale = 1.0f;
@@ -106,6 +106,28 @@ namespace Defense.Manager
 			}
 
 			playerSlotList[finalIndex].TryAdd(newController as ISlottable);
+		}
+
+		[ContextMenu("SpawnWall")]
+		private void SpawnWall()
+		{
+			Wall wall = Instantiate(wallPrefab, Vector3.zero, Quaternion.identity).GetComponent<Wall>();
+
+			for (int i = 0; i < playerSlotList.Count; i++)
+			{
+				if (playerSlotList[i].TryAdd(wall as ISlottable)) return;
+			}
+		}
+
+		[ContextMenu("SpawnFlag")]
+		private void SpawnFlag()
+		{
+			Flag flag = Instantiate(flagPrefab, Vector3.zero, Quaternion.identity).GetComponent<Flag>();
+
+			for (int i = 0; i < playerSlotList.Count; i++)
+			{
+				if (playerSlotList[i].TryAdd(flag as ISlottable)) return;
+			}
 		}
 
 		// Change Input, hide slots

@@ -23,8 +23,8 @@ namespace Defense.Props
 		public void PickUp(float posY);
 		public void DropTo(Vector3 position);
 
-		public void OnEndStage();
 		public void OnStartStage();
+		public void OnEndStage();
 	}
 
 	[System.Serializable]

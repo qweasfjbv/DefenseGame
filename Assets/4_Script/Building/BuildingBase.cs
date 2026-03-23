@@ -1,6 +1,7 @@
 using Defense.Components;
 using Defense.Interfaces;
 using Defense.Manager;
+using Defense.Props;
 using Defense.Utils;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ namespace Defense.Building
 	[RequireComponent(typeof(Damagable))]
 	public class BuildingBase : MonoBehaviour
 		, IResettable
+		, ISlottable
     {
 		[SerializeField] protected BuildingDataBase buildingData;
 
@@ -24,7 +26,8 @@ namespace Defense.Building
 
 		private StatContainer statContainer;
 
-		private void Awake()
+
+		protected virtual void Awake()
 		{
 			damagable = GetComponent<Damagable>();
 
@@ -64,5 +67,14 @@ namespace Defense.Building
 		{
 
 		}
+
+		/** ISlottable Interface **/
+		public SlotType SlotType => SlotType.Building;
+		public int ItemID => 100;	// HACK
+
+		public virtual void PickUp(float posY) { }
+		public virtual void DropTo(Vector3 position) { transform.position = position; }
+		public virtual void OnStartStage() { }
+		public virtual void OnEndStage() { }
 	}
 } 
