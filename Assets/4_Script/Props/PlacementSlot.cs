@@ -1,24 +1,52 @@
 using Defense.Controller;
 using Defense.Utils;
-using IUtil;
+using System;
 using System.Collections.Generic;
+using System.Net.Mail;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Defense.Props
 {
-	public enum SlotDir
+	public enum SlotType
 	{
-		Front = 0,
-		Back = 2,
+		None,
+		Unit,
+		Building,
+	}
+
+	public interface ISlottable
+	{
+		public SlotType SlotType { get; }
+		public int ItemID { get; }
+
+		public void PickUp(float posY);
+		public void DropTo(Vector3 position);
+
+		public void OnEndStage();
+		public void OnStartStage();
+	}
+
+	[System.Serializable]
+	public class SlotRule
+	{
+		private SlotType slotType;
+		private int maxCount;
+
+		public SlotType SlotType => slotType;
+		public int MaxCount => maxCount;
+
+		public SlotRule(SlotType type,  int maxCount)
+		{
+			this.slotType = type;
+			this.maxCount = maxCount;
+		}
 	}
 
 	public class PlacementSlot : MonoBehaviour
 	{
-		[SerializeField, ReadOnly]
-		private List<UnitController> units = new();
-
-		private SlotDir slotDir = SlotDir.Back;
-		private int slotID = -1;
+		private List<ISlottable> items = new();
+		private SlotType currentSlotType = SlotType.None;
 
 		private static float[,,] relativePos = new float[4, 3, 2]
 		{
@@ -36,11 +64,6 @@ namespace Defense.Props
 			},
 		};
 
-		public void InitSlot(SlotDir dir, int slotID)
-		{
-			slotDir = dir;
-		}
-
 		private void SetStartSlot(bool on)
 		{
 			GetComponent<Renderer>().material.color = on ? Constants.COLOR_SLOT_START : Color.white;
@@ -52,54 +75,65 @@ namespace Defense.Props
 
 		public bool IsEmpty()
 		{
-			return units.Count == 0;
-		}
-		public bool IsAbleToAdd(int unitId, int rarity)
-		{
-			if (units.Count >= Constants.SLOT_UNIT_MAX) return false;
-			if (units.Count == 0) return false;
-
-			return units[0].IsSameUnit(unitId, rarity);
+			return currentSlotType == SlotType.None;
 		}
 
-		public void AddUnit(UnitController controller)
+		public bool CanAdd(ISlottable item)
 		{
-			units.Add(controller);
-			controller.MySlot = this;
+			if (currentSlotType == SlotType.None) return true;
+			if (item.SlotType != currentSlotType) return false;
+
+			switch (currentSlotType)
+			{
+				case SlotType.Unit:
+					return items.Count < 3 && items[0].ItemID == item.ItemID;
+				case SlotType.Building:
+					return items.Count < 1;
+			}
+
+			return false;
+		}
+
+		public bool TryAdd(ISlottable item)
+		{
+			if(!CanAdd(item)) return false;
+
+			items.Add(item);
+
+			if(currentSlotType == SlotType.None) 
+				currentSlotType = item.SlotType;
+
 			DropAllUnits();
+			return true;
 		}
 
-		public void SetUnits(List<UnitController> units)
+		public void SetUnits(List<ISlottable> items)
 		{
-			if (units != null)
+			if (items == null || items.Count == 0)
 			{
-				this.units = units;
-				for(int i=0; i<units.Count; i++)
-				{
-					units[i].MySlot = this;
-				}
+				this.items = new();
+				currentSlotType = SlotType.None;
+				return;
 			}
-			else
-			{
-				this.units = null;
-			}
+
+			this.items = items;
+			currentSlotType = items[0].SlotType;
 		}
 
 		public void OnStartStage()
 		{
 			GetComponent<MeshRenderer>().material.color = Color.clear;
-			for(int i=0;i<units.Count;i++)
+			for(int i=0;i<items.Count;i++)
 			{
-				units[i].OnStartStage();
+				items[i].OnStartStage();
 			}
 		}
-
 		public void OnEndStage()
 		{
 			GetComponent<MeshRenderer>().material.color = Color.white;
-			for (int i = 0; i < units.Count; i++)
+			for (int i = 0; i < items.Count; i++)
 			{
-				units[i].OnEndStage();
+				items[i].OnEndStage();
 			}
 		}
 
@@ -133,8 +167,8 @@ namespace Defense.Props
 			if (slot == this) return;
 			slot.OnRelease();
 
-			List<UnitController> tmpUnit = slot.units;
-			slot.SetUnits(this.units);
+			List<ISlottable> tmpUnit = slot.items;
+			slot.SetUnits(items);
 			SetUnits(tmpUnit);
 
 			DropAllUnits();
@@ -143,18 +177,15 @@ namespace Defense.Props
 
 		private void DropAllUnits()
 		{
-			for (int i = 0; i < units.Count; i++)
+			for (int i = 0; i < items.Count; i++)
 			{
-				units[i].SetPlayerTeam(slotDir == SlotDir.Back ? 1 : 0, slotID);
-				units[i].DropTo(transform.position + 
-					Constants.SLOT_WIDTH * 
-					(Quaternion.Euler(0, 90*(int)slotDir, 0) * new Vector3(relativePos[units.Count,i,0], 0f, relativePos[units.Count,i,1]))); 
+				items[i].DropTo(transform.position + Constants.SLOT_WIDTH * new Vector3(relativePos[items.Count,i,0], 0f, relativePos[items.Count,i,1])); 
 			}
 		}
 
 		private void PickAllUnits()
 		{
-			for (int i = 0; i < units.Count; i++) { units[i].PickUp(transform.position.y); }
+			for (int i = 0; i < items.Count; i++) { items[i].PickUp(transform.position.y); }
 		}
 	}
 }
