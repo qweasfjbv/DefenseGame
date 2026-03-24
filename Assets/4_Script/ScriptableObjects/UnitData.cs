@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Defense
 {
 	[CreateAssetMenu(fileName = "EnemyData", menuName = "GameData/Enemy Data")]
-	public class UnitData : ScriptableObject
+	public class UnitData : ItemDataBase
 	{
 		[Header("Movement")]
 		[SerializeField] private float moveSpeed;

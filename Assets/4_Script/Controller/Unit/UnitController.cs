@@ -259,7 +259,7 @@ namespace Defense.Controller
 
 		/** ISlottable Interface **/
 		public SlotType SlotType => SlotType.Unit;
-		public int ItemID => 1;		// HACK - SO 수정에서 UnitID 담도록 해야될듯
+		public string ItemID => unitData.ItemID;
 		public void PickUp(float baseHeight)
 		{
 			if (currentTween != null) currentTween.Kill();

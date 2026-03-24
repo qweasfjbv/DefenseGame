@@ -70,7 +70,7 @@ namespace Defense.Building
 
 		/** ISlottable Interface **/
 		public SlotType SlotType => SlotType.Building;
-		public int ItemID => 100;	// HACK
+		public string ItemID => buildingData.ItemID;
 
 		public virtual void PickUp(float posY) { }
 		public virtual void DropTo(Vector3 position) { transform.position = position; }
