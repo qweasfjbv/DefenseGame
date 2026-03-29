@@ -1,6 +1,8 @@
 using Defense.Building;
 using Defense.Controller;
 using Defense.Props;
+using Defense.Systems;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,6 +28,10 @@ namespace Defense.Manager
 				return;
 			}
 		}
+
+		private CurrencySystem currency = new();
+		
+		private CurrencySystem Currency => currency;
 		#endregion
 
 		[SerializeField] private GameObject slotPrefab;
