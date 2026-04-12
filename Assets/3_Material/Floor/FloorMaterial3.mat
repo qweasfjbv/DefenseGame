@@ -114,13 +114,17 @@ Material:
     - _Direction: 0
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _End: 0.046
+    - _EdgeNoiseWidth: 0.122
+    - _End: 0.241
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Invert: 0
+    - _Invert: -0.42
     - _Metallic: 0
+    - _NoiseScale: 41.61
+    - _NoiseSpeed: 1
+    - _NoiseStrength: 0.017
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -132,7 +136,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _Start: 0
+    - _Start: 0.181
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1

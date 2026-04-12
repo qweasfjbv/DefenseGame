@@ -11,6 +11,9 @@ Shader "Custom/Gradation"
 
         _Direction ("Direction (0=X, 1=Y)", Float) = 0
         _Invert ("Invert", Float) = 0
+
+        _NoiseStrength ("Noise Strength", Range(0,0.2)) = 0.03
+        _NoiseScale ("Noise Scale", Float) = 10
     }
 
     SubShader
@@ -37,6 +40,9 @@ Shader "Custom/Gradation"
             float _Direction;
             float _Invert;
 
+            float _NoiseStrength;
+            float _NoiseScale;
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -57,9 +63,26 @@ Shader "Custom/Gradation"
                 return o;
             }
 
-            float GetGradient(float uvCoord)
+            float Noise(float2 uv)
             {
-                float t = saturate((uvCoord - _Start) / (_End - _Start));
+                float n = sin(uv.x * _NoiseScale)
+                        + sin(uv.y * _NoiseScale * 1.37)
+                        + sin((uv.x + uv.y) * _NoiseScale * 0.7);
+
+                return n / 3.0; // 대략 -1 ~ 1
+            }
+
+            float GetGradient(float uvCoord, float2 uv)
+            {
+                float noiseStart = Noise(uv * 1.1) * _NoiseStrength;
+                float noiseEnd   = Noise(uv * 0.9 + 10.0) * _NoiseStrength;
+
+                float noisyStart = _Start + noiseStart;
+                float noisyEnd   = _End + noiseEnd;
+
+                noisyEnd = max(noisyEnd, noisyStart + 0.001);
+
+                float t = saturate((uvCoord - noisyStart) / (noisyEnd - noisyStart));
 
                 if (_Invert > 0.5)
                     t = 1.0 - t;
@@ -73,7 +96,7 @@ Shader "Custom/Gradation"
                 col *= _Color;
 
                 float coord = (_Direction < 0.5) ? i.uv.x : i.uv.y;
-                float gradient = GetGradient(coord);
+                float gradient = GetGradient(coord, i.uv);
                 col.a *= gradient;
 
                 return col;
