@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: -7127766076287942954}
   - component: {fileID: -3812570319283532274}
   - component: {fileID: -1845563857844269721}
-  - component: {fileID: 2396043036542383134}
+  - component: {fileID: 6202542506661035884}
   m_Layer: 11
   m_Name: 0_Mage_Common
   m_TagString: Untagged
@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyId: 0
---- !u!114 &2396043036542383134
+--- !u!114 &6202542506661035884
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3657642983252307198}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 101d016c4d9834d458dbf83a916199d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 89e1b4829d2d46b4ca69b52f56de1159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4094539410893100118

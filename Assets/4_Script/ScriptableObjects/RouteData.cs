@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Defense
 {
-	[CreateAssetMenu(fileName = "RouteData", menuName = "GameData/Route Data")]
+	[CreateAssetMenu(fileName = "RouteData", menuName = "GameData/Routing Data")]
 	public class RouteData : ScriptableObject
 	{
 		[SerializeField] private Vector3 _spawnPoint;

@@ -19,6 +19,7 @@ namespace Defense.Controller
 		private Damagable damagable = null;
 		private Attackable attackable = null;
 		private Skillable skillable = null;
+		private Movable movable = null;
 
 		/** Stats **/
 		private UnitData unitData = null;				// SO Data
@@ -85,11 +86,20 @@ namespace Defense.Controller
 
 		private void Start()
 		{
+			Debug.Log("Start Unit");
+			movable = GetComponent<Movable>();
+
+			if(movable != null)
+			{
+				isInGame = true;
+			}
+
 			InitStatContainer(0);   // HACK - 임시로 0레벨 설정
 			damagable.Init(statContainer);
 			attackable.Init(statContainer);
 			skillable?.Init(statContainer);
-		}
+			movable?.Init(statContainer);
+        }
 
 
 		/// <summary>
@@ -114,7 +124,8 @@ namespace Defense.Controller
 				unitData.AttackDelay));
 		}
 
-		public void SetPlayerTeam(int playerIdx)
+
+        public void SetPlayerTeam(int playerIdx)
 		{
 			Quaternion lookRot = Quaternion.LookRotation(new Vector3(0, 0, playerIdx == 0 ? 1 : -1));
 			base.transform.rotation = lookRot;
@@ -171,9 +182,10 @@ namespace Defense.Controller
 					StartAttackAnim(targetTransform);
 				}
 			}
-			else if (isChasing)
+			else if (movable != null && movable.IsMoving)
 			{
-				ChaseTarget();
+				Debug.Log("Move!!!!!!!!!!!!!!!!");
+				movable.Move();
 			}
 		}
 
