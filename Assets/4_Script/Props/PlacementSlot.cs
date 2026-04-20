@@ -18,13 +18,13 @@ namespace Defense.Props
 	public interface ISlottable
 	{
 		public SlotType SlotType { get; }
-		public int ItemID { get; }
+		public string ItemID { get; }
 
 		public void PickUp(float posY);
 		public void DropTo(Vector3 position);
 
-		public void OnEndStage();
 		public void OnStartStage();
+		public void OnEndStage();
 	}
 
 	[System.Serializable]

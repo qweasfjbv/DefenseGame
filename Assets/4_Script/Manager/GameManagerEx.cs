@@ -3,6 +3,10 @@ using Defense.Controller;
 using Defense.Props;
 using Defense.Routing;
 using Defense.Utils;
+using Defense.Building;
+using Defense.Props;
+using Defense.Systems;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -28,13 +32,16 @@ namespace Defense.Manager
 				return;
 			}
 		}
-		#endregion
 
-		[SerializeField] private GameObject personPrefab;
-		[SerializeField] private int testCount;
+		private CurrencySystem currency = new();
+		
+		private CurrencySystem Currency => currency;
+		#endregion
 
 		[SerializeField] private GameObject slotPrefab;
 		[SerializeField] private GameObject testPrefab;
+		[SerializeField] private GameObject wallPrefab;
+		[SerializeField] private GameObject flagPrefab;
 
 		[SerializeField, Range(0.5f, 3.0f)]
 		private float timeScale = 1.0f;
@@ -150,6 +157,28 @@ namespace Defense.Manager
 			enemyObj.transform.position = new Vector3(randomX, 0, firstSlot.transform.position.z);
 
 			movable.SetWay();
+    }
+      
+		[ContextMenu("SpawnWall")]
+		private void SpawnWall()
+		{
+			Wall wall = Instantiate(wallPrefab, Vector3.zero, Quaternion.identity).GetComponent<Wall>();
+
+			for (int i = 0; i < playerSlotList.Count; i++)
+			{
+				if (playerSlotList[i].TryAdd(wall as ISlottable)) return;
+			}
+		}
+
+		[ContextMenu("SpawnFlag")]
+		private void SpawnFlag()
+		{
+			Flag flag = Instantiate(flagPrefab, Vector3.zero, Quaternion.identity).GetComponent<Flag>();
+
+			for (int i = 0; i < playerSlotList.Count; i++)
+			{
+				if (playerSlotList[i].TryAdd(flag as ISlottable)) return;
+			}
 		}
 
 		// Change Input, hide slots
