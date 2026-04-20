@@ -1,7 +1,14 @@
+using Defense.Components;
 using Defense.Controller;
 using Defense.Props;
-using IUtil;
+using Defense.Routing;
+using Defense.Utils;
+using Defense.Building;
+using Defense.Props;
+using Defense.Systems;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Defense.Manager
@@ -25,22 +32,40 @@ namespace Defense.Manager
 				return;
 			}
 		}
+
+		private CurrencySystem currency = new();
+		
+		private CurrencySystem Currency => currency;
 		#endregion
 
-		[SerializeField] private GameObject personPrefab;
-		[SerializeField] private int testCount;
-
 		[SerializeField] private GameObject slotPrefab;
+		[SerializeField] private GameObject testPrefab;
+		[SerializeField] private GameObject wallPrefab;
+		[SerializeField] private GameObject flagPrefab;
 
 		[SerializeField, Range(0.5f, 3.0f)]
 		private float timeScale = 1.0f;
 
-		private List<PlacementSlot> player1SlotList = new List<PlacementSlot>();
-		private List<PlacementSlot> player2SlotList = new List<PlacementSlot>();
+		private Transform slotParent = null;
+		private List<PlacementSlot> playerSlotList = new List<PlacementSlot>();
+		private PlacementSlot firstSlot;
+
+		private Grids grid;
+
+		private int width = 5;
+		private int height = 5;
+
+		public List<PlacementSlot> PlayerSlotList => playerSlotList;
+		public Grids Grid => grid;
+		public int Width => width;
+		public int Height => height;
 
 		private void Awake()
 		{
 			Init();
+			SpawnSlots();
+
+			grid = new Grids(playerSlotList, firstSlot, width, height);
 		}
 
 		private void Update()
@@ -49,40 +74,36 @@ namespace Defense.Manager
 
 		}
 
-		[Button]
 		private void SpawnSlots()
 		{
-			int slotID = 0;
+			slotParent = new GameObject{ name = "SlotParent" }.transform;
 			for (int i = 0; i < 5; i++)
 			{
 				for (int j = 0; j < 5; j++)
 				{
-					PlacementSlot slot = Instantiate(slotPrefab, new Vector3(5 * j, 0.01f, 15 + 5 * (i + 1)), Quaternion.Euler(90f, 0, 0)).GetComponent<PlacementSlot>();
-					slot.InitSlot(SlotDir.Back, slotID++);
-					player1SlotList.Add(slot);
+					PlacementSlot slot = Instantiate(slotPrefab, new Vector3(-10 + 5 * j, 0.01f,5f + 5 * i), Quaternion.Euler(90f, 0, 0), slotParent).GetComponent<PlacementSlot>();
+					playerSlotList.Add(slot);
 				}
 			}
 
-			for (int i = 0; i < 5; i++)
-			{
-				for (int j = 0; j < 5; j++)
-				{
-					PlacementSlot slot = Instantiate(slotPrefab, new Vector3(5 * j, 0.01f, -15 + 5 * (i + 1)), Quaternion.Euler(90f, 0, 0)).GetComponent<PlacementSlot>();
-					slot.InitSlot(SlotDir.Front, slotID++);
-					player2SlotList.Add(slot);
-				}
-			}
-		}
+			firstSlot = Instantiate(slotPrefab, new Vector3(0, 0.01f, 30), Quaternion.Euler(90f, 0, 0), slotParent).GetComponent<PlacementSlot>();
+        }
 
+		// HACK
 		int randId = 0;
-		[Button]
-		private void SpawnMage()
+
+		[ContextMenu("SpawnUnit")]
+		private void SpawnUnit()
 		{
 			int rand = UnityEngine.Random.Range(0, 2);
-			List<PlacementSlot> playerSlotList = rand == 1 ? player1SlotList : player2SlotList;
+			if (!playerSlotList.Any((item) => item.IsEmpty())) return;
 
 			// 뭘 Spawn할지 결정
 			int id = (randId++) % 4;
+			UnitController newController = Instantiate(Managers.Resource.GetUnitPrefab(id, 0), Vector3.zero, Quaternion.identity)
+				.GetComponent<UnitController>();
+			newController.InitUnit(id);
+
 			int emptyIdx = -1;
 			int sameIdx = -1;
 			for(int i=0; i<playerSlotList.Count; i++)
@@ -93,7 +114,7 @@ namespace Defense.Manager
 					continue;
 				}
 
-				if (playerSlotList[i].IsAbleToAdd(id, 0))
+				if (playerSlotList[i].CanAdd(newController as ISlottable))
 				{
 					sameIdx = i;
 				}
@@ -110,41 +131,74 @@ namespace Defense.Manager
 				return;
 			}
 
-			UnitController newController = Instantiate(Managers.Resource.GetUnitPrefab(id, 0), playerSlotList[finalIndex].transform.position, Quaternion.identity)
-				.GetComponent<UnitController>();
-			newController.InitUnit(id);
+			playerSlotList[finalIndex].TryAdd(newController as ISlottable);
+		}
 
-			playerSlotList[finalIndex].AddUnit(newController);
+        [ContextMenu("SpawnEnemyUnit")]
+        private void SpawnEnemyUnit()
+		{
+			GameObject enemyObj = Instantiate(testPrefab, transform);
+			UnitController enemyUnit = enemyObj.GetComponent<UnitController>();
+
+			if(enemyUnit != null)
+			{
+                enemyUnit.InitUnit(0);
+            }
+
+            Movable movable;
+			if(!enemyObj.TryGetComponent<Movable>(out movable))
+			{
+				movable = enemyObj.AddComponent<Movable>();
+			}
+
+			float randomX = Random.Range(firstSlot.transform.position.x - Constants.SLOT_WIDTH / 2,
+				firstSlot.transform.position.x + Constants.SLOT_WIDTH / 2);
+
+			enemyObj.transform.position = new Vector3(randomX, 0, firstSlot.transform.position.z);
+
+			movable.SetWay();
+    }
+      
+		[ContextMenu("SpawnWall")]
+		private void SpawnWall()
+		{
+			Wall wall = Instantiate(wallPrefab, Vector3.zero, Quaternion.identity).GetComponent<Wall>();
+
+			for (int i = 0; i < playerSlotList.Count; i++)
+			{
+				if (playerSlotList[i].TryAdd(wall as ISlottable)) return;
+			}
+		}
+
+		[ContextMenu("SpawnFlag")]
+		private void SpawnFlag()
+		{
+			Flag flag = Instantiate(flagPrefab, Vector3.zero, Quaternion.identity).GetComponent<Flag>();
+
+			for (int i = 0; i < playerSlotList.Count; i++)
+			{
+				if (playerSlotList[i].TryAdd(flag as ISlottable)) return;
+			}
 		}
 
 		// Change Input, hide slots
-		[Button()]
+		[ContextMenu("StartStage")]
 		private void StartStage()
 		{
-			for (int i = 0; i < player1SlotList.Count; i++)
+			for (int i = 0; i < playerSlotList.Count; i++)
 			{
-				player1SlotList[i].OnStartStage();
-			}
-			for (int i = 0; i < player2SlotList.Count; i++)
-			{
-				player2SlotList[i].OnStartStage();
+				playerSlotList[i].OnStartStage();
 			}
 		}
 
 		// Change Input, Show slot, revive units
-		[Button()]
 		private void EndStage()
 		{
-			for (int i = 0; i < player1SlotList.Count; i++)
+			for (int i = 0; i < playerSlotList.Count; i++)
 			{
-				player1SlotList[i].OnEndStage();
-			}
-			for (int i = 0; i < player2SlotList.Count; i++)
-			{
-				player2SlotList[i].OnEndStage();
+				playerSlotList[i].OnEndStage();
 			}
 		}
-
 
 		private int currentWave = 0;
 		public void OnGameStartButtonClicked()

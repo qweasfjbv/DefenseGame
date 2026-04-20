@@ -1,5 +1,3 @@
-
-
 namespace Defense.Controller
 {
 	/// <summary>
@@ -7,39 +5,6 @@ namespace Defense.Controller
 	/// </summary>
 	public partial class UnitController
 	{
-
-		/** Animation Events **/
-		public void OnAttack()
-		{
-			if (attackTarget == null) return;
-			Attack(attackTarget);
-			currentMP += unitData.MPPerAttack;
-		}
-
-		public void OnSkill()
-		{
-			ExecuteSkill(skillTargets, skillTargetCount);
-		}
-
-		public void OnEndAttack()
-		{
-			isAttacking = false;
-		}
-
-		/** Game Cycle Events **/
-		public void OnEndStage()
-		{
-			gameObject.SetActive(true);
-			InitCombat();
-
-			isInGame = false;
-			isAttacking = false;
-			isChasing = false;
-		}
-		public void OnStartStage()
-		{
-			isInGame = true;
-		}
 
 	}
 }

@@ -47,4 +47,16 @@ namespace Defense.Utils
 		Lightning,
 
 	}
+
+	[System.Serializable]
+	public enum StatType
+	{
+		MaxHP,
+		MaxMP,
+		AttackPower,
+		AttackCooltime,
+		AttackDelay,
+		DefensePower,
+		MoveSpeed,
+	}
 }

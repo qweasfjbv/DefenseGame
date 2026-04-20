@@ -12,28 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdc70bb699fd6454192bfd6676edd02e, type: 3}
   m_Name: 0_Shielder_Common
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
-  _rotationSpeed: 10
-  _damageType: 0
-  _searchRange: 100
-  _attackRange: 3
-  _attackCooltime: 2
-  _attackDelay: 0
-  _mpPerAttack: 0
-  _useKnockback: 0
-  _knockbackDuration: 0
-  _targetLayer:
+  moveSpeed: 1
+  rotationSpeed: 10
+  damageType: 0
+  searchRange: 100
+  attackRange: 3
+  attackCooltime: 2
+  attackDelay: 0
+  mpPerAttack: 0
+  useKnockback: 0
+  knockbackDuration: 0
+  targetLayer:
     serializedVersion: 2
     m_Bits: 0
-  _maxDetectCounts: 5
-  _deathAnimDuration: 0.5
-  _fadeOutDuration: 0.5
-  _skillDuration: 1
-  _statsByLevel:
-  - MaxHealth: 1
-    MaxMP: 0
-    AttackPower: 1
-    DefensePower: 0
+  maxDetectCounts: 5
+  deathAnimDuration: 0.5
+  fadeOutDuration: 0.5
+  skillDuration: 1
+  statsByLevel:
+  - MaxHealth: 100
+    MaxMP: 100
+    AttackPower: 10
+    DefensePower: 1
     CritProb: 0
   - MaxHealth: 0
     MaxMP: 0
@@ -45,9 +45,9 @@ MonoBehaviour:
     AttackPower: 0
     DefensePower: 0
     CritProb: 0
-  - MaxHealth: 20
+  - MaxHealth: 0
     MaxMP: 0
-    AttackPower: 1
+    AttackPower: 0
     DefensePower: 0
     CritProb: 0
   - MaxHealth: 0

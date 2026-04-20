@@ -79,7 +79,7 @@ namespace Defense.Manager
 				{
 					if (selectedSlot == prevHoverSlot)
 					{
-						UIManager.Instance.GameUI.ShowSlotUI(prevHoverSlot.transform.position, prevHoverSlot);
+						UIManager.GameUI.ShowSlotUI(prevHoverSlot.transform.position, prevHoverSlot);
 					}
 					ChangeSlot(prevHoverSlot);
 				}
