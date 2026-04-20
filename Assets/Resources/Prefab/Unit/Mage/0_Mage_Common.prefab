@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: -7127766076287942954}
   - component: {fileID: -3812570319283532274}
   - component: {fileID: -1845563857844269721}
-  - component: {fileID: -8146335486798543964}
+  - component: {fileID: 6202542506661035884}
   m_Layer: 11
   m_Name: 0_Mage_Common
   m_TagString: Untagged
@@ -458,7 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyId: 0
---- !u!114 &-8146335486798543964
+--- !u!114 &6202542506661035884
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -1,5 +1,9 @@
-using Defense.Building;
+using Defense.Components;
 using Defense.Controller;
+using Defense.Props;
+using Defense.Routing;
+using Defense.Utils;
+using Defense.Building;
 using Defense.Props;
 using Defense.Systems;
 using System;
@@ -35,6 +39,7 @@ namespace Defense.Manager
 		#endregion
 
 		[SerializeField] private GameObject slotPrefab;
+		[SerializeField] private GameObject testPrefab;
 		[SerializeField] private GameObject wallPrefab;
 		[SerializeField] private GameObject flagPrefab;
 
@@ -43,11 +48,24 @@ namespace Defense.Manager
 
 		private Transform slotParent = null;
 		private List<PlacementSlot> playerSlotList = new List<PlacementSlot>();
+		private PlacementSlot firstSlot;
+
+		private Grids grid;
+
+		private int width = 5;
+		private int height = 5;
+
+		public List<PlacementSlot> PlayerSlotList => playerSlotList;
+		public Grids Grid => grid;
+		public int Width => width;
+		public int Height => height;
 
 		private void Awake()
 		{
 			Init();
 			SpawnSlots();
+
+			grid = new Grids(playerSlotList, firstSlot, width, height);
 		}
 
 		private void Update()
@@ -67,7 +85,9 @@ namespace Defense.Manager
 					playerSlotList.Add(slot);
 				}
 			}
-		}
+
+			firstSlot = Instantiate(slotPrefab, new Vector3(0, 0.01f, 30), Quaternion.Euler(90f, 0, 0), slotParent).GetComponent<PlacementSlot>();
+        }
 
 		// HACK
 		int randId = 0;
@@ -114,6 +134,31 @@ namespace Defense.Manager
 			playerSlotList[finalIndex].TryAdd(newController as ISlottable);
 		}
 
+        [ContextMenu("SpawnEnemyUnit")]
+        private void SpawnEnemyUnit()
+		{
+			GameObject enemyObj = Instantiate(testPrefab, transform);
+			UnitController enemyUnit = enemyObj.GetComponent<UnitController>();
+
+			if(enemyUnit != null)
+			{
+                enemyUnit.InitUnit(0);
+            }
+
+            Movable movable;
+			if(!enemyObj.TryGetComponent<Movable>(out movable))
+			{
+				movable = enemyObj.AddComponent<Movable>();
+			}
+
+			float randomX = Random.Range(firstSlot.transform.position.x - Constants.SLOT_WIDTH / 2,
+				firstSlot.transform.position.x + Constants.SLOT_WIDTH / 2);
+
+			enemyObj.transform.position = new Vector3(randomX, 0, firstSlot.transform.position.z);
+
+			movable.SetWay();
+    }
+      
 		[ContextMenu("SpawnWall")]
 		private void SpawnWall()
 		{
