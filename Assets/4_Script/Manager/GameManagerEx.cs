@@ -1,11 +1,10 @@
+using Defense.Building;
 using Defense.Components;
 using Defense.Controller;
 using Defense.Props;
 using Defense.Routing;
-using Defense.Utils;
-using Defense.Building;
-using Defense.Props;
 using Defense.Systems;
+using Defense.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -151,7 +150,7 @@ namespace Defense.Manager
 				movable = enemyObj.AddComponent<Movable>();
 			}
 
-			float randomX = Random.Range(firstSlot.transform.position.x - Constants.SLOT_WIDTH / 2,
+			float randomX = UnityEngine.Random.Range(firstSlot.transform.position.x - Constants.SLOT_WIDTH / 2,
 				firstSlot.transform.position.x + Constants.SLOT_WIDTH / 2);
 
 			enemyObj.transform.position = new Vector3(randomX, 0, firstSlot.transform.position.z);
