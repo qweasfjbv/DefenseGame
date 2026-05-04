@@ -89,11 +89,6 @@ namespace Defense.Controller
 			Debug.Log("Start Unit");
 			movable = GetComponent<Movable>();
 
-			if(movable != null)
-			{
-				isInGame = true;
-			}
-
 			InitStatContainer(0);   // HACK - 임시로 0레벨 설정
 			damagable.Init(statContainer);
 			attackable.Init(statContainer);
@@ -124,7 +119,6 @@ namespace Defense.Controller
 				unitData.AttackDelay));
 		}
 
-
         public void SetPlayerTeam(int playerIdx)
 		{
 			Quaternion lookRot = Quaternion.LookRotation(new Vector3(0, 0, playerIdx == 0 ? 1 : -1));
@@ -148,7 +142,7 @@ namespace Defense.Controller
 
 		private void Update()
 		{
-			if (!isInGame) return;
+			//if (!isInGame) return;
 
 			if (unitData == null) return;
 			UpdateKnockbackRemainedTime();
@@ -181,59 +175,119 @@ namespace Defense.Controller
 				{
 					StartAttackAnim(targetTransform);
 				}
-			}
-			else if (movable != null && movable.IsMoving)
+            }
+			else if (movable != null)
 			{
-				Debug.Log("Move!!!!!!!!!!!!!!!!");
-				movable.Move();
+				animator.SetFloat(animIDSpeed, 1f);
+
+				if (movable.IsMoving)
+				{
+					movable.Move();
+                }
+				else 
+				{
+					movable.SetWay();
+					movable.IsMoving = true;
+				}
 			}
 		}
 
 		public void OnStopTargetting()
 		{
 			attackable.IsAbleToAttack = false;
+
 			isChasing = false;
 		}
+
+		private bool IsOnPath(Transform target)
+		{
+			if (!movable || movable.PathList == null || movable.PathList.Count < 2) return false;
+
+			Vector3 targetPos = target.position;
+			targetPos.y = 0;
+
+			var pathList = movable.PathList;
+
+            float pathWidth = Constants.SLOT_WIDTH / 2;
+
+			for(int i = 0; i < pathList.Count - 1; i++)
+			{
+				if(movable.CurrentWayIdx < pathList.Count - 1)
+				{
+					Vector3 a = pathList[i];
+					Vector3 b = pathList[i + 1];
+
+					float dist = DistancePointToSegment(targetPos, a, b);
+
+					if (dist <= pathWidth)
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+		private float DistancePointToSegment(Vector3 p, Vector3 a, Vector3 b)
+		{
+            Vector3 ap = p - a;
+            Vector3 ab = b - a;
+
+            float abSqr = ab.sqrMagnitude;
+            float dot = Vector3.Dot(ap, ab);
+            float t = dot / abSqr;
+
+            t = Mathf.Clamp(t, 0, 1);
+
+            Vector3 closest = a + ab * t;
+            return Vector3.Distance(p, closest);
+        }
 
 		private int targetCounts = 0;
 		private void CheckNearbyTarget()
 		{
-			targetCounts = Physics.OverlapSphereNonAlloc(base.transform.position, unitData.SearchRange, targets, targetLayer);
-			if (targetCounts > 0)
-			{
-				float minDistance = float.MaxValue;
-				Transform closestTarget = null;
+			targetCounts = Physics.OverlapSphereNonAlloc(base.transform.position, unitData.AttackRange, targets, targetLayer);
+			Debug.Log($"{gameObject.name} of targetCounts {targetCounts}");
+			float minDistance = float.MaxValue;
+			Transform closestTarget = null;
 
-				for (int i = 0; i < targetCounts; i++)
+
+			for (int i = 0; i < targetCounts; i++)
+			{
+				if (targets[i] == null) break;
+				if (!targets[i].TryGetComponent<Damagable>(out var target) ||
+					!target.IsAbleToTargeted(unitData.AttackDelay))	continue;
+
+				if (movable && !IsOnPath(target.transform)) continue;
+
+				float distance = Vector3.SqrMagnitude(base.transform.position - targets[i].transform.position);
+
+				if (distance < minDistance)
 				{
-					if (targets[i] == null) break;
-					if (!targets[i].TryGetComponent<Damagable>(out var target) ||
-						!target.IsAbleToTargeted(unitData.AttackDelay))	continue;
-					float distance = Vector3.SqrMagnitude(base.transform.position - targets[i].transform.position);
-
-					if (distance < minDistance)
-					{
-						minDistance = distance;
-						closestTarget = targets[i].transform;
-					}
+					minDistance = distance;
+					closestTarget = targets[i].transform;
 				}
-
-				targetTransform = closestTarget;
-				if (targetTransform == null) return;
-				isChasing = true;
-			}
-			else
-			{
-				targetTransform = null;
-				isChasing = false;
 			}
 
-			if (targetTransform != null && Vector3.SqrMagnitude(base.transform.position- targetTransform.position) <= unitData.AttackRange * unitData.AttackRange)
+			targetTransform = closestTarget;
+
+			if (targetTransform == null) 
 			{
-				attackable.IsAbleToAttack = true;
-				isChasing = false;
+				attackable.IsAbleToAttack = false;
+				return;
 			}
-		}
+
+            float attackRangeSqr = unitData.AttackRange * unitData.AttackRange;
+            float distToTarget = Vector3.SqrMagnitude(transform.position - targetTransform.position);
+
+            if (distToTarget <= attackRangeSqr)
+            {
+                attackable.IsAbleToAttack = true;
+            }
+            else
+            {
+                attackable.IsAbleToAttack = false;
+            }
+        }
 
 		private void ChaseTarget()
 		{

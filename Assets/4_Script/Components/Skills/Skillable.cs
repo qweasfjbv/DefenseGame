@@ -52,8 +52,6 @@ namespace Defense.Components
 		{
             if (skillTargetCount <= 0) return;
 
-			Debug.Log("곰곰히 스킬 써");
-
             isSkilling = true;
 
 			manaStat.OnUseSkill();
@@ -62,7 +60,7 @@ namespace Defense.Components
 
 		public void OnEndSkill()
 		{
-			Debug.Log("스킬 끝나써");
+			Debug.Log("스킬 끝");
 			isSkilling = false;
 		}
 	}

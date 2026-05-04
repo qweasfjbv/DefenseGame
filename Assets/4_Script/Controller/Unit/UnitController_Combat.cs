@@ -22,7 +22,7 @@ namespace Defense.Controller
 		{
 			if (target == null)
 			{
-				OnStopTargetting();
+                OnStopTargetting();
 				return;
 			}
 
@@ -48,10 +48,6 @@ namespace Defense.Controller
 				OnStopTargetting();
 				return;
 			}
-
-			// HACK - 임시 스킬 테스트용
-			//skillTargets[0] = targetTransform;
-			//skillTargetCount = 1;
 
 			// 타겟 설정
 			skillable.AddTarget(targetTransform);

@@ -102,8 +102,9 @@ namespace Defense.Manager
 			UnitController newController = Instantiate(Managers.Resource.GetUnitPrefab(id, 0), Vector3.zero, Quaternion.identity)
 				.GetComponent<UnitController>();
 			newController.InitUnit(id);
+			newController.SetPlayerTeam(0);
 
-			int emptyIdx = -1;
+            int emptyIdx = -1;
 			int sameIdx = -1;
 			for(int i=0; i<playerSlotList.Count; i++)
 			{
@@ -138,6 +139,7 @@ namespace Defense.Manager
 		{
 			GameObject enemyObj = Instantiate(testPrefab, transform);
 			UnitController enemyUnit = enemyObj.GetComponent<UnitController>();
+			enemyUnit.SetPlayerTeam(1);
 
 			if(enemyUnit != null)
 			{
@@ -156,7 +158,7 @@ namespace Defense.Manager
 			enemyObj.transform.position = new Vector3(randomX, 0, firstSlot.transform.position.z);
 
 			movable.SetWay();
-    }
+		}
       
 		[ContextMenu("SpawnWall")]
 		private void SpawnWall()

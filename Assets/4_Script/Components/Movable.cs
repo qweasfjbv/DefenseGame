@@ -13,13 +13,29 @@ namespace Defense.Components
 
         private List<Vector3> wayList = new();
 
+        private List<Vector3> pathList = new();
+
         private float widthOffset;
 
-        private int currentWayIndex = 0;
+        [SerializeField] private int currentWayIdx = 0;
 
         private bool isMoving = false;
 
-        public bool IsMoving => isMoving;
+        public List<Vector3> PathList => pathList;
+
+        public int CurrentWayIdx => currentWayIdx;
+
+        public bool IsMoving { get => isMoving; set => isMoving = value; }
+
+        private void Awake()
+        {
+            Debug.Log("Movable");
+        }
+
+        private void OnEnable()
+        {
+            Debug.Log("Movable enable");
+        }
 
         public void Init(StatContainer statContainer)
         {
@@ -28,7 +44,9 @@ namespace Defense.Components
 
         public void SetWay()
         {
-            List<Vector3> pathList = Route.FindPath(GameManagerEx.Instance.Grid, transform.position);
+            pathList.Clear();
+
+            pathList = Route.FindPath(GameManagerEx.Instance.Grid, transform.position);
             
             for(int i = 0; i < pathList.Count; i++)
             {
@@ -64,7 +82,7 @@ namespace Defense.Components
                     continue;
                 }
 
-                // 👉 끝점
+                // 끝점
                 if (i == pathList.Count - 1)
                 {
                     // 이전 방향 기준으로 offset
@@ -73,7 +91,7 @@ namespace Defense.Components
                     continue;
                 }
 
-                // 👉 중간 (코너 or 직선)
+                // 중간 (코너 or 직선)
                 float dot = Vector3.Dot(forwardPrev, forwardNext);
 
                 // 거의 직선
@@ -84,7 +102,7 @@ namespace Defense.Components
                 }
                 else
                 {
-                    // 👉 코너 처리
+                    // 코너 처리
                     Vector3 bisector = Calculation.GetConsistentBisector(-forwardPrev, forwardNext);
 
                     Vector3 cornerPoint = pathList[i] + bisector * widthOffset *1.4f;
@@ -100,18 +118,30 @@ namespace Defense.Components
         {
             if (wayList == null || wayList.Count == 0) return;
 
-            //움직일 위치
-            Vector3 targetPos = wayList[currentWayIndex];
+            if (currentWayIdx >= wayList.Count) return;
 
-            //움직이고
+            //움직일 위치
+            Vector3 targetPos = wayList[currentWayIdx];
+
+            // 방향
+            Vector3 dir = targetPos - transform.position;
+            dir.y = 0;
+
+            if (dir.sqrMagnitude > 0.0001f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, 50f * Time.deltaTime);
+            }
+
+            //움직임
             transform.position = Vector3.MoveTowards(transform.position, targetPos, movementStat.CurrentSpeed.Value * Time.deltaTime);
 
             //도착하면 다음 인덱스로
             if (Vector3.Distance(transform.position, targetPos) < 0.05f)
             {
-                currentWayIndex++;
-                Debug.Log($"change index {currentWayIndex}");
-                if(currentWayIndex >= wayList.Count)
+                currentWayIdx++;
+                Debug.Log($"change index {currentWayIdx}");
+                if(currentWayIdx >= wayList.Count)
                 {
                     isMoving = false;
                 }
