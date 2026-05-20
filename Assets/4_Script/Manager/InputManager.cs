@@ -44,11 +44,12 @@ namespace Defense.Manager
 		}
 
 		private void HandleSetupInput()
+
 		{
 			PlacementSlot slot = null;
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			if (Physics.Raycast(ray, out RaycastHit hit, 100f, Constants.LAYER_SLOT))
+			if (Physics.Raycast(ray, out RaycastHit hit, 300f, Constants.LAYER_SLOT))
 			{
 				if (control.Game.LeftClick.WasPressedThisFrame())
 				{

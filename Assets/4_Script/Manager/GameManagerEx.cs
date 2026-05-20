@@ -41,6 +41,7 @@ namespace Defense.Manager
 		[SerializeField] private GameObject testPrefab;
 		[SerializeField] private GameObject wallPrefab;
 		[SerializeField] private GameObject flagPrefab;
+		[SerializeField] private GameObject wallBridgePrefab;
 
 		[SerializeField, Range(0.5f, 3.0f)]
 		private float timeScale = 1.0f;
@@ -48,6 +49,8 @@ namespace Defense.Manager
 		private Transform slotParent = null;
 		private List<PlacementSlot> playerSlotList = new List<PlacementSlot>();
 		private PlacementSlot firstSlot;
+
+		private Dictionary<BridgeKey, GameObject> bridges = new();
 
 		private Grids grid;
 
@@ -206,6 +209,68 @@ namespace Defense.Manager
 		{
 
 		}
+
+		#region Building
+
+		// playerSlotList 기반 인덱스 조회
+		private bool TryGetIndex(PlacementSlot slot, out Vector2Int index)
+		{
+			int i = playerSlotList.IndexOf(slot);
+			if (i < 0) { index = default; return false; }
+			index = new Vector2Int(i % width, i / width);
+			return true;
+		}
+
+		private PlacementSlot GetSlot(Vector2Int index)
+		{
+			if (index.x < 0 || index.x >= width || index.y < 0 || index.y >= height)
+				return null;
+			return playerSlotList[index.y * width + index.x];
+		}
+
+		public void RefreshAround(PlacementSlot slot)
+		{
+			// 제거: if (!slot.HasWall()) return;
+			if (!TryGetIndex(slot, out Vector2Int idx)) return;
+
+			Vector2Int[] offsets = {
+				new( 1,  0),
+				new(-1,  0),
+				new( 0,  1),
+				new( 0, -1),
+			};
+
+			foreach (var offset in offsets)
+			{
+				Vector2Int neighborIdx = idx + offset;
+				PlacementSlot neighbor = GetSlot(neighborIdx);
+				if (neighbor == null) continue;
+
+				BridgeKey key = BridgeKey.FromPair(idx, neighborIdx);
+
+				if (slot.HasWall() && neighbor.HasWall())
+				{
+					if (!bridges.ContainsKey(key))
+					{
+						Vector3 midPos = (slot.transform.position + neighbor.transform.position) / 2f;
+						Quaternion rot = key.Direction == BridgeDirection.Horizontal
+							? Quaternion.Euler(0, 90, 0)
+							: Quaternion.Euler(0, 0, 0);
+
+						bridges[key] = Instantiate(wallBridgePrefab, midPos, rot);
+					}
+				}
+				else
+				{
+					if (bridges.TryGetValue(key, out GameObject existing))
+					{
+						Destroy(existing);
+						bridges.Remove(key);
+					}
+				}
+			}
+		}
+		#endregion
 
 	}
 }

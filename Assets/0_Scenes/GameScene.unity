@@ -3601,7 +3601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cbd4c990ff45164b86c7f187f0efe2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraBoomLength: 200
+  cameraBoomLength: 198.5
   moveSpeed: 5
   rotSpeed: 15
   zoomSpeed: 100
@@ -22878,8 +22878,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotPrefab: {fileID: 5504582280501421385, guid: ad58bd08bbf000247972d08dea8a3183, type: 3}
+  testPrefab: {fileID: 0}
   wallPrefab: {fileID: 7534359834750214234, guid: 28683567c3090f64c81ea0483738b7ac, type: 3}
   flagPrefab: {fileID: 1188626461182970146, guid: 7790ec73cb11e394483973c2b4047311, type: 3}
+  wallBridgePrefab: {fileID: 8667575409659736185, guid: daddcfbbd5e2953489bfa3241a430869, type: 3}
   timeScale: 1
 --- !u!114 &1811063209
 MonoBehaviour:

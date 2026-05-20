@@ -1,3 +1,5 @@
+using Defense.Building;
+using Defense.Manager;
 using Defense.Utils;
 using System.Collections.Generic;
 using UnityEngine;
@@ -73,6 +75,11 @@ namespace Defense.Props
 		{
 			return currentSlotType == SlotType.None;
 		}
+		public bool HasWall()
+		{
+			return currentSlotType == SlotType.Building &&
+				items[0] is Wall;
+		}
 
 		public bool CanAdd(ISlottable item)
 		{
@@ -99,6 +106,7 @@ namespace Defense.Props
 			if(currentSlotType == SlotType.None) 
 				currentSlotType = item.SlotType;
 
+			GameManagerEx.Instance.RefreshAround(this);
 			DropAllUnits();
 			return true;
 		}
@@ -169,6 +177,8 @@ namespace Defense.Props
 
 			DropAllUnits();
 			slot.DropAllUnits();
+			GameManagerEx.Instance.RefreshAround(slot);
+			GameManagerEx.Instance.RefreshAround(this);
 		}
 
 		private void DropAllUnits()
