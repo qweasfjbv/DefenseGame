@@ -1,6 +1,7 @@
 using Defense.Building;
 using Defense.Manager;
 using Defense.Utils;
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ namespace Defense.Props
 	{
 		public SlotType SlotType { get; }
 		public string ItemID { get; }
+		public PlacementSlot MySlot { get; set; }
 
 		public void PickUp(float posY);
 		public void DropTo(Vector3 position);
@@ -80,6 +82,10 @@ namespace Defense.Props
 			return currentSlotType == SlotType.Building &&
 				items[0] is Wall;
 		}
+		public bool HasObstacle()
+		{
+			return currentSlotType == SlotType.Building;
+		}
 
 		public bool CanAdd(ISlottable item)
 		{
@@ -107,8 +113,17 @@ namespace Defense.Props
 				currentSlotType = item.SlotType;
 
 			GameManagerEx.Instance.RefreshAround(this);
+			item.MySlot = this;
 			DropAllUnits();
 			return true;
+		}
+
+		public void Clear()
+		{
+			// Only Logic
+			currentSlotType = SlotType.None;
+			items = null;
+			GameManagerEx.Instance.RefreshAround(this);
 		}
 
 		public void SetUnits(List<ISlottable> items)
@@ -122,6 +137,7 @@ namespace Defense.Props
 
 			this.items = items;
 			currentSlotType = items[0].SlotType;
+			for (int i = 0; i < items.Count; i++) items[i].MySlot = this;
 		}
 
 		public void OnStartStage()
@@ -139,6 +155,7 @@ namespace Defense.Props
 			{
 				items[i].OnEndStage();
 			}
+			DropAllUnits();
 		}
 
 		private bool isSelected = false;

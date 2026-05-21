@@ -12153,7 +12153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -16703,7 +16703,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1412835978
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22878,10 +22878,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotPrefab: {fileID: 5504582280501421385, guid: ad58bd08bbf000247972d08dea8a3183, type: 3}
-  testPrefab: {fileID: 0}
+  testPrefab: {fileID: 3657642983252307198, guid: aaa529521eeb0ee4185ca85987a4c3d4, type: 3}
   wallPrefab: {fileID: 7534359834750214234, guid: 28683567c3090f64c81ea0483738b7ac, type: 3}
   flagPrefab: {fileID: 1188626461182970146, guid: 7790ec73cb11e394483973c2b4047311, type: 3}
   wallBridgePrefab: {fileID: 8667575409659736185, guid: daddcfbbd5e2953489bfa3241a430869, type: 3}
+  enemyCount: 0
   timeScale: 1
 --- !u!114 &1811063209
 MonoBehaviour:

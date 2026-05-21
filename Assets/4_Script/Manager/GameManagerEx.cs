@@ -5,7 +5,9 @@ using Defense.Props;
 using Defense.Routing;
 using Defense.Systems;
 using Defense.Utils;
+using NUnit.Framework.Constraints;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -33,7 +35,7 @@ namespace Defense.Manager
 		}
 
 		private CurrencySystem currency = new();
-		
+
 		private CurrencySystem Currency => currency;
 		#endregion
 
@@ -42,13 +44,14 @@ namespace Defense.Manager
 		[SerializeField] private GameObject wallPrefab;
 		[SerializeField] private GameObject flagPrefab;
 		[SerializeField] private GameObject wallBridgePrefab;
+		[SerializeField] private int enemyCount;
 
 		[SerializeField, Range(0.5f, 3.0f)]
 		private float timeScale = 1.0f;
 
 		private Transform slotParent = null;
 		private List<PlacementSlot> playerSlotList = new List<PlacementSlot>();
-		private PlacementSlot firstSlot;
+		private GameObject firstSlot;
 
 		private Dictionary<BridgeKey, GameObject> bridges = new();
 
@@ -74,24 +77,32 @@ namespace Defense.Manager
 		{
 			Time.timeScale = timeScale;
 
+			// HACK
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				SpawnUnit();
+			}
 		}
 
 		private void SpawnSlots()
 		{
-			slotParent = new GameObject{ name = "SlotParent" }.transform;
+			slotParent = new GameObject { name = "SlotParent" }.transform;
 			for (int i = 0; i < 5; i++)
 			{
 				for (int j = 0; j < 5; j++)
 				{
-					PlacementSlot slot = Instantiate(slotPrefab, new Vector3(-10 + 5 * j, 0.01f,5f + 5 * i), Quaternion.Euler(90f, 0, 0), slotParent).GetComponent<PlacementSlot>();
+					PlacementSlot slot = Instantiate(slotPrefab, new Vector3(-10 + 5 * j, 0.01f, 5f + 5 * i), Quaternion.Euler(90f, 0, 0), slotParent).GetComponent<PlacementSlot>();
 					playerSlotList.Add(slot);
 				}
 			}
 
-			firstSlot = Instantiate(slotPrefab, new Vector3(0, 0.01f, 30), Quaternion.Euler(90f, 0, 0), slotParent).GetComponent<PlacementSlot>();
-        }
+			firstSlot = new GameObject { name = "StartSlot" };
+			firstSlot.transform.position = new Vector3(0, 0.01f, 30);
+			firstSlot.transform.parent = slotParent;
+		}
 
 		// HACK
+
 		int randId = 0;
 
 		[ContextMenu("SpawnUnit")]
@@ -144,13 +155,13 @@ namespace Defense.Manager
 			UnitController enemyUnit = enemyObj.GetComponent<UnitController>();
 			enemyUnit.SetPlayerTeam(1);
 
-			if(enemyUnit != null)
+			if (enemyUnit != null)
 			{
-                enemyUnit.InitUnit(0);
-            }
+				enemyUnit.InitUnit(0);
+			}
 
-            Movable movable;
-			if(!enemyObj.TryGetComponent<Movable>(out movable))
+			Movable movable;
+			if (!enemyObj.TryGetComponent<Movable>(out movable))
 			{
 				movable = enemyObj.AddComponent<Movable>();
 			}
@@ -189,13 +200,26 @@ namespace Defense.Manager
 		[ContextMenu("StartStage")]
 		private void StartStage()
 		{
+			UIManager.GameUI.OnStageStart(1);
 			for (int i = 0; i < playerSlotList.Count; i++)
 			{
 				playerSlotList[i].OnStartStage();
 			}
+			StartCoroutine(StartStageCoroutine());
 		}
 
+		private IEnumerator StartStageCoroutine()
+		{
+			for (int i = 0; i < enemyCount; i++)
+			{
+				SpawnEnemyUnit();
+				yield return new WaitForSeconds(UnityEngine.Random.Range(0f, .5f));
+			}
+		}
+
+
 		// Change Input, Show slot, revive units
+		[ContextMenu("End Stage")]
 		private void EndStage()
 		{
 			for (int i = 0; i < playerSlotList.Count; i++)
@@ -230,8 +254,8 @@ namespace Defense.Manager
 
 		public void RefreshAround(PlacementSlot slot)
 		{
-			// 제거: if (!slot.HasWall()) return;
 			if (!TryGetIndex(slot, out Vector2Int idx)) return;
+			grid.SetObstacleNode(new Vector2Int(idx.y, idx.x), slot.HasObstacle());
 
 			Vector2Int[] offsets = {
 				new( 1,  0),

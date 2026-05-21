@@ -42,7 +42,9 @@ namespace Defense.Routing
         public PathNode ParentNode { get => parentNode; set => parentNode = value; }
 
         public float GridCost { get => gridCost; set => gridCost = value; }
-        public float FinalCost => heuristicCost + gridCost;
+
+        // 중앙 회귀를 위한 추가 Cost 계산
+        public float FinalCost => heuristicCost + gridCost + Mathf.Abs(OriginNode.RealPosition.x);
 
         public void CalculateFinalCost(float gridCost, Vector3 finalPos)
         {

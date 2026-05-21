@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdc70bb699fd6454192bfd6676edd02e, type: 3}
   m_Name: 0_Mage_Common
   m_EditorClassIdentifier: 
-  moveSpeed: 1
+  itemID: b5608eb3-cc8a-4f66-898f-662a2a0b6ba9
+  moveSpeed: 0.2
   rotationSpeed: 10
   damageType: 1
   searchRange: 100

@@ -23,8 +23,9 @@ namespace Defense.Building
 		[SerializeField] protected BuildingDataBase buildingData;
 
 		private Damagable damagable = null;
-
 		private StatContainer statContainer;
+
+		public PlacementSlot MySlot { get; set; }
 
 
 		protected virtual void Awake()
@@ -47,6 +48,8 @@ namespace Defense.Building
 
 		protected virtual void OnDisable()
 		{
+			MySlot.Clear();
+			MySlot = null;
 			PoolingManager.Instance.SpawnParticle(ParticleType.Build, transform.position);
 		}
 

@@ -16,7 +16,7 @@ namespace Defense.Routing
         public Node EndNode => endNode;
 
         // todo : placement 리스트를 받아서 그리드를 만들도록
-        public Grids(List<PlacementSlot> slotList, PlacementSlot firstSlot, int width, int height)
+        public Grids(List<PlacementSlot> slotList, GameObject firstSlot, int width, int height)
         {
             nodes = new Node[width, height+1];
             this.width = width;
@@ -41,11 +41,12 @@ namespace Defense.Routing
             nodes[width / 2, height] = new Node(id, new Vector2Int(width / 2, height), firstSlot.transform.position);
 
             // HACK
-            endNode = nodes[0, 4];
+            endNode = nodes[0, 2];
         }
 
         public void SetObstacleNode(Vector2Int pos, bool isObstacle = true)
         {
+            if (isObstacle) Debug.Log("OBSTACLE : " + pos + ", " + isObstacle);
             nodes[pos.x, pos.y].IsObstacle = isObstacle;
         }
 

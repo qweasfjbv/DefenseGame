@@ -21,6 +21,7 @@ namespace Defense.Controller
 		private Skillable skillable = null;
 		private Movable movable = null;
 
+
 		/** Stats **/
 		private UnitData unitData = null;				// SO Data
 		private StatContainer statContainer = null;
@@ -53,6 +54,8 @@ namespace Defense.Controller
 		/** State Variables **/
 		private bool isChasing = false;
 		private bool isInGame = false;          // Wait for game start
+
+		public PlacementSlot MySlot { get; set; }
 
 		public virtual bool IsSameUnit(int unitId, int rarity) { return false; }
 		//protected virtual void ExecuteSkill(Transform[] targets, int targetCounts) { }
@@ -246,7 +249,7 @@ namespace Defense.Controller
 		private void CheckNearbyTarget()
 		{
 			targetCounts = Physics.OverlapSphereNonAlloc(base.transform.position, unitData.AttackRange, targets, targetLayer);
-			Debug.Log($"{gameObject.name} of targetCounts {targetCounts}");
+			// Debug.Log($"{gameObject.name} of targetCounts {targetCounts}");
 			float minDistance = float.MaxValue;
 			Transform closestTarget = null;
 
@@ -337,6 +340,7 @@ namespace Defense.Controller
 		{
 			if (currentTween != null) currentTween.Kill();
 			transform.position = new Vector3(targetSlotPos.x, targetSlotPos.y + hoverHeight, targetSlotPos.z);
+			transform.rotation = Quaternion.Euler(0, 0, 0);
 
 			Sequence seq = DOTween.Sequence();
 			seq.Append(transform.DOMoveY(targetSlotPos.y, hoverDuration).SetEase(Ease.InQuad));

@@ -138,7 +138,7 @@ namespace Defense.Components
 		{
 			this.maxMP = new Stat(maxMP);
 			this.mpPerAttack = new Stat(mpPerAttack);
-			this.currentMP = maxMP;
+			this.currentMP = 0f;
 		}
 
 		public void Reset()

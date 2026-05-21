@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdc70bb699fd6454192bfd6676edd02e, type: 3}
   m_Name: 0_Warrior_Common
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  itemID: 80fa9b50-77f4-4e3c-b2da-eef0196262fc
+  moveSpeed: 2
   rotationSpeed: 10
   damageType: 0
   searchRange: 100

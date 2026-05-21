@@ -81,6 +81,7 @@ namespace Defense.Controller
 			}
 			if (initPressed)
 			{
+				return;
 				targetLookatPosition = Vector3.zero;
 				sphericalAngles = new Vector2(-45f, 45f);
 			}
