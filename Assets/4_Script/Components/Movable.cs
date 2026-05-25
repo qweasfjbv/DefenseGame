@@ -42,11 +42,11 @@ namespace Defense.Components
             if (!statContainer.TryGet(out movementStat)) Debug.LogWarning("Move Stat doesn't exist");
         }
 
-        public void SetWay()
+        public void SetWay(bool isIgnoreObs = false)
         {
             pathList.Clear();
 
-            pathList = Route.FindPath(GameManagerEx.Instance.Grid, transform.position);
+            pathList = Route.FindPath(GameManagerEx.Instance.Grid, transform.position, isIgnoreObs);
             
             for(int i = 0; i < pathList.Count; i++)
             {

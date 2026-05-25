@@ -10,7 +10,7 @@ namespace Defense.Routing
         private static int[] dx = { 0, -1, 0, 1 };
         private static int[] dy = { -1, 0, 1, 0 };
 
-        public static List<Vector3> FindPath(Grids grid, Vector3 unitPosition)
+        public static List<Vector3> FindPath(Grids grid, Vector3 unitPosition, bool isIgnoreObs)
         {
             Dictionary<Node, PathNode> pathNodes = new();
 
@@ -73,7 +73,7 @@ namespace Defense.Routing
 
                     if (adjacentNode == null) continue;
 
-                    if (adjacentNode.IsObstacle) continue;
+                    if (adjacentNode.IsObstacle && !isIgnoreObs) continue;
 
                     PathNode adjacentPathNode = GetPathNode(adjacentNode);
 

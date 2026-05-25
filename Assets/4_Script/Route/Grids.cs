@@ -41,7 +41,7 @@ namespace Defense.Routing
             nodes[width / 2, height] = new Node(id, new Vector2Int(width / 2, height), firstSlot.transform.position);
 
             // HACK
-            endNode = nodes[0, 4];
+            endNode = nodes[0, 2];
         }
 
         public void SetObstacleNode(Vector2Int pos, bool isObstacle = true)

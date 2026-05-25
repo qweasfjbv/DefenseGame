@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdc70bb699fd6454192bfd6676edd02e, type: 3}
+  m_Name: 0_CatapultData
+  m_EditorClassIdentifier: Assembly-CSharp::Defense.UnitData
+  itemID: 84016fd8-5f41-4d1f-8b3b-1e7e52ba3dda
+  moveSpeed: 3
+  rotationSpeed: 10
+  damageType: 0
+  searchRange: 50
+  attackRange: 5
+  attackCooltime: 2
+  attackDelay: 2
+  mpPerAttack: 0
+  useKnockback: 0
+  knockbackDuration: 0
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 16384
+  maxDetectCounts: 10
+  deathAnimDuration: 0.5
+  fadeOutDuration: 0.5
+  skillDuration: 1
+  statsByLevel:
+  - MaxHealth: 50
+    MaxMP: 100
+    AttackPower: 100
+    DefensePower: 3
+    CritProb: 0.2
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0
+  - MaxHealth: 0
+    MaxMP: 0
+    AttackPower: 0
+    DefensePower: 0
+    CritProb: 0

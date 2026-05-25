@@ -9,13 +9,15 @@ namespace Defense.Manager
 			"Datas/ScriptableObjects/EnemyDatas/Warrior/",
 			"Datas/ScriptableObjects/EnemyDatas/Archer/",
 			"Datas/ScriptableObjects/EnemyDatas/Mage/",
-			"Datas/ScriptableObjects/EnemyDatas/Shielder/"
+			"Datas/ScriptableObjects/EnemyDatas/Shielder/",
+			"Datas/ScriptableObjects/EnemyDatas/Catapult"
 		};
 		private string[] enemyPrefabPath = new string[] {
 			"Prefab/Unit/Warrior/",
 			"Prefab/Unit/Archer/",
 			"Prefab/Unit/Mage/",
-			"Prefab/Unit/Shielder/"
+			"Prefab/Unit/Shielder/",
+			"Prefab/Unit/Catapult"
 		};
 
 		private string routeDataPath = "Datas/ScriptableObjects/RouteDatas/";

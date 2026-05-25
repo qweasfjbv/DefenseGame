@@ -42,6 +42,7 @@ namespace Defense.Manager
 		[SerializeField] private GameObject wallPrefab;
 		[SerializeField] private GameObject flagPrefab;
 		[SerializeField] private GameObject wallBridgePrefab;
+		[SerializeField] private GameObject machinePrefab;
 
 		[SerializeField, Range(0.5f, 3.0f)]
 		private float timeScale = 1.0f;
@@ -184,6 +185,27 @@ namespace Defense.Manager
 				if (playerSlotList[i].TryAdd(flag as ISlottable)) return;
 			}
 		}
+
+		[ContextMenu("SpawnMachine")]
+		private void SpawnMachine()
+		{
+			GameObject machine = Instantiate(machinePrefab, transform);
+
+			machine.transform.position = firstSlot.transform.position;
+
+			UnitController unit = machine.GetComponent<UnitController>();
+			unit.SetPlayerTeam(1);
+			//HACK
+			unit.InitUnit(4);
+
+            Movable movable;
+            if (!machine.TryGetComponent<Movable>(out movable))
+            {
+                movable = machine.AddComponent<Movable>();
+            }
+
+			movable.SetWay(true);
+        }
 
 		// Change Input, hide slots
 		[ContextMenu("StartStage")]
